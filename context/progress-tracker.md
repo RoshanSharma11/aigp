@@ -34,23 +34,23 @@ When **blocked**:
 |---|---|
 | **Current phase** | Phase 3 — Runtime & Agent Access |
 | **Current feature** | None started |
-| **MVP progress** | 86% (19/22 MVP features: Phases 0–3 + 4.1) |
-| **Last milestone** | Phase 2 complete — G2 precision gate passed; count-ratio gate documented |
-| **Next milestone** | Feature 3.1 complete — Capability store (read path) |
+| **MVP progress** | 91% (21/22 MVP features: Phases 0–3 + 4.1) |
+| **Last milestone** | Features 3.1–3.2 complete — store read path + output generators |
+| **Next milestone** | Feature 3.3 complete — ExecutorService |
 
 ---
 
 ## Current Focus
 
-**Nothing in progress.** Phase 2 complete (G2 precision passed). Ready to begin **Phase 3 — Feature 3.1 Capability store (read path)**.
+**Nothing in progress.** Features 3.1–3.2 complete. Ready to begin **Feature 3.3 ExecutorService**.
 
 ---
 
 ## Next Up
 
-1. **Feature 3.1** — Capability store (read path)
-2. **Feature 3.2** — Output generators
-3. **Feature 3.3** — ExecutorService
+1. **Feature 3.3** — ExecutorService
+2. **Feature 3.4** — DiscoveryController
+3. **Feature 3.5** — CapabilityController
 
 ---
 
@@ -124,8 +124,8 @@ When **blocked**:
 
 | Feature | Name | Status | Completed | Notes |
 |---|---|---|---|---|
-| 3.1 | Capability store (read path) | not_started | — | |
-| 3.2 | Output generators | not_started | — | |
+| 3.1 | Capability store (read path) | done | 2026-06-12 | `store/reader.ts` loads published + draft; merges `overrides.json`; filters `status === "approved"` |
+| 3.2 | Output generators | done | 2026-06-12 | `generators/` produces agent.json, agent-card.json, openapi.json, mcp-tools.json; `--publish` writes all |
 | 3.3 | ExecutorService | not_started | — | |
 | 3.4 | DiscoveryController | not_started | — | |
 | 3.5 | CapabilityController | not_started | — | |
@@ -190,6 +190,10 @@ When **blocked**:
 
 | Date | Feature | Decision | Rationale |
 |---|---|---|---|
+| 2026-06-12 | 3.2 | `--publish` merges draft + overrides, writes `capabilities.json` + discovery artifacts | Minimal publish path before 4.1 review CLI; fails clearly when no approved capabilities |
+| 2026-06-12 | 3.2 | One MCP tool per capability with `operation` + `input` params | Matches architecture; avoids route-level tool explosion |
+| 2026-06-12 | 3.1 | Override merge logic in `builder/merger.ts`; read I/O in `store/reader.ts` | Separates pure merge from file I/O per module boundaries |
+| 2026-06-12 | 3.1 | Missing `overrides.json` treated as empty artifact, not error | Overrides are optional; runtime should not fail when absent |
 | 2026-06-12 | 2.8 | G2 count-ratio gate fails on 7-route fixture (3/7 = 43% > 30%) | Documented blocker; gate targets larger apps; precision gate passes at 100% |
 | 2026-06-12 | 2.8 | Normalize `search_products` hint → `product_catalog` for entity-centric merge eval | Ground truth route hint is pre-merge; grouping correctly merges product routes |
 | 2026-06-12 | 2.8 | `--eval` exits 0 when precision passes even if count-ratio fails | Precision is the hard gate for Phase 3; count-ratio reported as blocker |
@@ -243,7 +247,7 @@ When **blocked**:
 
 ## Notes
 
-- **Phase 2 complete.** Full `analyze` on fixture produces draft artifacts; G2 precision 100% on fixture; count-ratio gate (≤30%) documented as failing on small 7-route fixture.
+- **Store read path and generators are in place.** `loadPublishedCapabilities()` merges overrides and returns approved-only; `publishCapabilities()` writes `capabilities.json` + discovery docs; `analyze --publish` integrated.
 - **Accuracy evaluation is in place.** `evaluateCapabilityPrecision()` compares capabilities vs `ground-truth.json`; `analyze --eval` reports precision/recall/count-ratio.
 - **Artifact store write path is in place.** `writeAnalysisArtifacts()` writes validated `capabilities.draft.json`, `pending-review.json`, `analysis-meta.json`, and `route-graph.json`.
 - **Full analyze pipeline is in place.** `runFullAnalysis()` runs static analysis + 4-stage reasoner + capability builder; aggregates LLM usage into `analysis-meta.json`.
@@ -277,4 +281,4 @@ When **blocked**:
 
 ---
 
-**Last updated:** 2026-06-12 — Phase 2 complete. Features 2.7–2.8 shipped: artifact store write path, full analyze CLI, accuracy evaluation with G2 precision gate passing on fixture.
+**Last updated:** 2026-06-12 — Features 3.1–3.2 shipped: capability store read path, override merge, output generators, and `--publish` CLI integration.

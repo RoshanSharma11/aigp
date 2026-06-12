@@ -79,11 +79,17 @@ export {
 } from "./eval/precision.js";
 export {
   AGENT_LAYER_DIRECTORY,
+  AGENT_CARD_FILE,
+  AGENT_JSON_FILE,
   ANALYSIS_META_ARTIFACT_VERSION,
   ANALYSIS_META_FILE,
   CAPABILITIES_ARTIFACT_VERSION,
   CAPABILITIES_DRAFT_FILE,
+  CAPABILITIES_FILE,
   ensureAgentLayerDirectory,
+  MCP_TOOLS_FILE,
+  OPENAPI_FILE,
+  OVERRIDES_FILE,
   PENDING_REVIEW_FILE,
   resolveAgentLayerDirectory,
   ROUTE_GRAPH_FILE,
@@ -97,6 +103,66 @@ export {
   type AnalysisMetaArtifact,
   type WriteAnalysisArtifactsResult,
 } from "./store/writer.js";
+export {
+  EMPTY_OVERRIDES_ARTIFACT,
+  loadApprovedCapabilitiesFromDraft,
+  loadCapabilitiesArtifact,
+  loadCapabilitiesDraftArtifact,
+  loadOverridesArtifact,
+  loadPublishedCapabilities,
+  resolveCapabilitiesDraftPath,
+  resolveCapabilitiesPath,
+  resolveOverridesPath,
+  type LoadPublishedCapabilitiesResult,
+} from "./store/reader.js";
+export { StoreError } from "./store/errors.js";
+export {
+  publishCapabilities,
+  serializePublishedCapabilities,
+  writePublishedCapabilities,
+  type PublishCapabilitiesOptions,
+  type PublishCapabilitiesResult,
+} from "./store/publish.js";
+export {
+  filterApprovedCapabilities,
+  mergeCapabilityOverride,
+  mergeCapabilityOverrides,
+} from "./builder/merger.js";
+export {
+  generateDiscoveryArtifacts,
+  generateAndWriteDiscoveryArtifacts,
+  writeDiscoveryArtifacts,
+  type DiscoveryArtifacts,
+  type WriteDiscoveryArtifactsResult,
+} from "./generators/index.js";
+export {
+  AGENT_JSON_SPEC_VERSION,
+  generateAgentJson,
+  type AgentJsonDocument,
+} from "./generators/agent-json.js";
+export {
+  AGENT_CARD_SPEC_VERSION,
+  generateAgentCard,
+  type AgentCardDocument,
+} from "./generators/agent-card.js";
+export {
+  OPENAPI_SPEC_VERSION,
+  generateOpenApi,
+  type OpenApiDocument,
+} from "./generators/openapi.js";
+export {
+  MCP_TOOLS_ARTIFACT_VERSION,
+  generateMcpTools,
+  type McpToolsDocument,
+} from "./generators/mcp.js";
+export {
+  DEFAULT_AGENT_PREFIX,
+  DEFAULT_WELL_KNOWN_PREFIX,
+  buildCapabilitiesListEndpoint,
+  buildCapabilityEndpoint,
+  joinUrl,
+  type DiscoveryGeneratorContext,
+} from "./generators/types.js";
 export {
   DEFAULT_LLM_MAX_RETRIES,
   DEFAULT_LLM_RETRY_BACKOFF_MS,

@@ -151,4 +151,24 @@ describe("analyze CLI command", () => {
     },
     30_000,
   );
+
+  it(
+    "should fail publish when no approved capabilities exist",
+    async () => {
+      const artifactDirectory = path.join(fixtureRoot, ".agent-layer");
+      await rm(artifactDirectory, { recursive: true, force: true });
+
+      const result = await runAnalyzeCommand(
+        ["--publish", fixtureRoot],
+        fixtureRoot,
+        { llmProvider: createEcommerceFixtureMockProvider() },
+      );
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain("No approved capabilities to publish");
+
+      await rm(artifactDirectory, { recursive: true, force: true });
+    },
+    30_000,
+  );
 });

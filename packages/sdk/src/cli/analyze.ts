@@ -21,12 +21,18 @@ import {
   runStaticAnalysis,
   writeRouteGraphArtifact,
 } from "../analyzer/route-graph.js";
+import {
+  CAPABILITIES_FILE,
+} from "../store/writer.js";
+import { publishCapabilities } from "../store/publish.js";
+import { StoreError } from "../store/errors.js";
 import type { LlmProvider } from "../reasoner/llm/types.js";
 
 export interface AnalyzeCommandOptions {
   readonly rootPath: string;
   readonly staticOnly: boolean;
   readonly eval: boolean;
+  readonly publish: boolean;
   readonly json: boolean;
 }
 
@@ -44,6 +50,7 @@ export interface AnalyzeCommandResult {
 const ANALYZE_FLAGS = new Set([
   "--static-only",
   "--eval",
+  "--publish",
   "--json",
   "--verbose",
   "--help",
@@ -60,11 +67,12 @@ export const parseAnalyzeCommandOptions = (
     return {
       ok: false,
       message: [
-        "agent-layer analyze [path] [--static-only] [--eval] [--json]",
+        "agent-layer analyze [path] [--static-only] [--eval] [--publish] [--json]",
         "",
         "Run capability analysis and write .agent-layer artifacts",
         "  --static-only  Static RouteGraph only (no LLM)",
         "  --eval         Compare output against ground-truth.json",
+        "  --publish      Publish approved capabilities and generate discovery docs",
         "  --json         Emit structured JSON to stdout",
       ].join("\n"),
       exitCode: 0,
@@ -112,6 +120,7 @@ export const parseAnalyzeCommandOptions = (
       rootPath: path.resolve(positionalArguments[0] ?? cwd),
       staticOnly: args.includes("--static-only"),
       eval: args.includes("--eval"),
+      publish: args.includes("--publish"),
       json: args.includes("--json"),
     },
   };
@@ -147,6 +156,14 @@ export const runAnalyzeCommand = async (
     return {
       exitCode: parsed.exitCode,
       stderr: `${parsed.message}\n`,
+      stdout: "",
+    };
+  }
+
+  if (parsed.options.staticOnly && parsed.options.publish) {
+    return {
+      exitCode: 2,
+      stderr: "analyze --publish cannot be combined with --static-only\n",
       stdout: "",
     };
   }
@@ -208,6 +225,35 @@ export const runAnalyzeCommand = async (
 
   let exitCode = 0;
   let evalPayload: ReturnType<typeof evaluateCapabilityPrecision> | undefined;
+  let publishPayload: Awaited<ReturnType<typeof publishCapabilities>> | undefined;
+
+  if (parsed.options.publish) {
+    try {
+      publishPayload = await publishCapabilities({
+        rootPath: parsed.options.rootPath,
+        generatedAt: analysisResult.meta.generatedAt,
+        config,
+      });
+      stderrLines.push(
+        `Published ${publishPayload.approvedCount} approved capabilities to ${CAPABILITIES_FILE}`,
+      );
+      stderrLines.push(`Skipped ${publishPayload.skippedCount} non-approved capabilities`);
+      stderrLines.push(`Wrote ${publishPayload.discoveryPaths.agentJsonPath}`);
+      stderrLines.push(`Wrote ${publishPayload.discoveryPaths.agentCardPath}`);
+      stderrLines.push(`Wrote ${publishPayload.discoveryPaths.openApiPath}`);
+      stderrLines.push(`Wrote ${publishPayload.discoveryPaths.mcpToolsPath}`);
+    } catch (error) {
+      if (error instanceof StoreError && error.code === "NO_APPROVED_CAPABILITIES") {
+        return {
+          exitCode: 1,
+          stderr: `${error.message}\n`,
+          stdout: "",
+        };
+      }
+
+      throw error;
+    }
+  }
 
   if (parsed.options.eval) {
     const groundTruthPath = resolveGroundTruthPath(parsed.options.rootPath);
@@ -227,6 +273,7 @@ export const runAnalyzeCommand = async (
     ? {
         ...analysisResult,
         ...(evalPayload !== undefined ? { eval: evalPayload } : {}),
+        ...(publishPayload !== undefined ? { publish: publishPayload } : {}),
       }
     : undefined;
 

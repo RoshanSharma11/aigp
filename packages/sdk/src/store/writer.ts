@@ -13,10 +13,16 @@ import type { PendingReviewArtifact } from "../reasoner/prompts/refine.v1.js";
 import type { LlmUsageStats } from "../reasoner/llm/types.js";
 
 export const AGENT_LAYER_DIRECTORY = ".agent-layer";
+export const CAPABILITIES_FILE = "capabilities.json";
 export const CAPABILITIES_DRAFT_FILE = "capabilities.draft.json";
+export const OVERRIDES_FILE = "overrides.json";
 export const PENDING_REVIEW_FILE = "pending-review.json";
 export const ANALYSIS_META_FILE = "analysis-meta.json";
 export const ROUTE_GRAPH_FILE = "route-graph.json";
+export const AGENT_JSON_FILE = "agent.json";
+export const AGENT_CARD_FILE = "agent-card.json";
+export const OPENAPI_FILE = "openapi.json";
+export const MCP_TOOLS_FILE = "mcp-tools.json";
 
 export const CAPABILITIES_ARTIFACT_VERSION = "1.0.0";
 export const ANALYSIS_META_ARTIFACT_VERSION = "1.0.0";
