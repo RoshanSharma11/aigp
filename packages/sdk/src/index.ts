@@ -164,6 +164,39 @@ export {
   type DiscoveryGeneratorContext,
 } from "./generators/types.js";
 export {
+  executeCapability,
+  buildInternalRouteRequest,
+  resolveCapabilityOperation,
+} from "./runtime/executor.js";
+export { RuntimeError } from "./runtime/errors.js";
+export {
+  validateJsonSchema,
+  type SchemaValidationResult,
+} from "./runtime/schema-validator.js";
+export type {
+  CapabilityExecutionError,
+  CapabilityExecutionMetadata,
+  CapabilityExecutionRequest,
+  CapabilityExecutionResult,
+  InternalRouteProxy,
+  InternalRouteRequest,
+  InternalRouteResponse,
+} from "./runtime/types.js";
+export {
+  AGENT_LAYER_MODULE_OPTIONS,
+  DEFAULT_WELL_KNOWN_CONTROLLER_PATH,
+  INTERNAL_ROUTE_PROXY,
+  resolveWellKnownControllerPath,
+  type AgentLayerModuleOptions,
+} from "./runtime/nestjs/tokens.js";
+export { CapabilityRegistryService } from "./runtime/nestjs/capability-registry.service.js";
+export {
+  ExpressInternalRouteProxy,
+  StaticInternalRouteProxy,
+} from "./runtime/nestjs/internal-route-proxy.js";
+export { ExecutorService } from "./runtime/nestjs/executor.service.js";
+export { DiscoveryController } from "./runtime/nestjs/discovery.controller.js";
+export {
   DEFAULT_LLM_MAX_RETRIES,
   DEFAULT_LLM_RETRY_BACKOFF_MS,
   DEFAULT_LLM_TIMEOUT_MS,

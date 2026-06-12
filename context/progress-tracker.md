@@ -34,23 +34,23 @@ When **blocked**:
 |---|---|
 | **Current phase** | Phase 3 — Runtime & Agent Access |
 | **Current feature** | None started |
-| **MVP progress** | 91% (21/22 MVP features: Phases 0–3 + 4.1) |
-| **Last milestone** | Features 3.1–3.2 complete — store read path + output generators |
-| **Next milestone** | Feature 3.3 complete — ExecutorService |
+| **MVP progress** | 85% (23/27 MVP features through Phase 3 + 4.1) |
+| **Last milestone** | Features 3.3–3.4 complete — ExecutorService + DiscoveryController |
+| **Next milestone** | Feature 3.5 complete — CapabilityController |
 
 ---
 
 ## Current Focus
 
-**Nothing in progress.** Features 3.1–3.2 complete. Ready to begin **Feature 3.3 ExecutorService**.
+**Nothing in progress.** Features 3.3–3.4 complete. Ready to begin **Feature 3.5 CapabilityController**.
 
 ---
 
 ## Next Up
 
-1. **Feature 3.3** — ExecutorService
-2. **Feature 3.4** — DiscoveryController
-3. **Feature 3.5** — CapabilityController
+1. **Feature 3.5** — CapabilityController
+2. **Feature 3.6** — AgentLayerModule
+3. **Feature 3.7** — End-to-end agent test
 
 ---
 
@@ -126,8 +126,8 @@ When **blocked**:
 |---|---|---|---|---|
 | 3.1 | Capability store (read path) | done | 2026-06-12 | `store/reader.ts` loads published + draft; merges `overrides.json`; filters `status === "approved"` |
 | 3.2 | Output generators | done | 2026-06-12 | `generators/` produces agent.json, agent-card.json, openapi.json, mcp-tools.json; `--publish` writes all |
-| 3.3 | ExecutorService | not_started | — | |
-| 3.4 | DiscoveryController | not_started | — | |
+| 3.3 | ExecutorService | done | 2026-06-12 | `runtime/executor.ts` + NestJS `ExecutorService`; Ajv input/output validation; in-process proxy via `ExpressInternalRouteProxy`; auth passthrough; structured envelope |
+| 3.4 | DiscoveryController | done | 2026-06-12 | `runtime/nestjs/discovery.controller.ts` serves `/.well-known/agent.json`, `agent-card.json`, `openapi.json` dynamically from approved capabilities |
 | 3.5 | CapabilityController | not_started | — | |
 | 3.6 | AgentLayerModule | not_started | — | |
 | 3.7 | End-to-end agent test | not_started | — | |
@@ -190,6 +190,10 @@ When **blocked**:
 
 | Date | Feature | Decision | Rationale |
 |---|---|---|---|
+| 2026-06-12 | 3.4 | DiscoveryController generates docs at request time via existing generators | Keeps runtime in sync with approved capabilities without static file reads |
+| 2026-06-12 | 3.3 | Pure execution logic in `runtime/executor.ts`; NestJS wrapper in `runtime/nestjs/executor.service.ts` | Unit-testable core separate from DI/framework; matches module boundaries |
+| 2026-06-12 | 3.3 | `ExpressInternalRouteProxy` uses loopback `fetch` against the listening NestJS HTTP server | Reliable in-process proxy; raw req/res injection hangs with NestJS/Express test harness |
+| 2026-06-12 | 3.3 | Explicit `@Inject()` on NestJS constructor params | Vitest/esbuild strips `emitDecoratorMetadata`; explicit injection keeps DI reliable in tests |
 | 2026-06-12 | 3.2 | `--publish` merges draft + overrides, writes `capabilities.json` + discovery artifacts | Minimal publish path before 4.1 review CLI; fails clearly when no approved capabilities |
 | 2026-06-12 | 3.2 | One MCP tool per capability with `operation` + `input` params | Matches architecture; avoids route-level tool explosion |
 | 2026-06-12 | 3.1 | Override merge logic in `builder/merger.ts`; read I/O in `store/reader.ts` | Separates pure merge from file I/O per module boundaries |
@@ -247,6 +251,7 @@ When **blocked**:
 
 ## Notes
 
+- **Runtime executor and discovery are in place.** `executeCapability()` validates input/output, proxies to internal routes, and returns structured envelopes; `DiscoveryController` serves AWP/A2A/OpenAPI docs dynamically from `CapabilityRegistryService`.
 - **Store read path and generators are in place.** `loadPublishedCapabilities()` merges overrides and returns approved-only; `publishCapabilities()` writes `capabilities.json` + discovery docs; `analyze --publish` integrated.
 - **Accuracy evaluation is in place.** `evaluateCapabilityPrecision()` compares capabilities vs `ground-truth.json`; `analyze --eval` reports precision/recall/count-ratio.
 - **Artifact store write path is in place.** `writeAnalysisArtifacts()` writes validated `capabilities.draft.json`, `pending-review.json`, `analysis-meta.json`, and `route-graph.json`.
@@ -281,4 +286,4 @@ When **blocked**:
 
 ---
 
-**Last updated:** 2026-06-12 — Features 3.1–3.2 shipped: capability store read path, override merge, output generators, and `--publish` CLI integration.
+**Last updated:** 2026-06-12 — Features 3.3–3.4 shipped: ExecutorService with in-process proxy, JSON Schema validation, and DiscoveryController for `/.well-known/*` endpoints.
