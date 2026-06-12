@@ -9,3 +9,4 @@ coverage
 .vscode
 graphify-out/
 .pnpm-store/
+memory.md

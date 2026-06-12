@@ -34,23 +34,23 @@ When **blocked**:
 |---|---|
 | **Current phase** | Phase 2 — Capability Generation |
 | **Current feature** | None started |
-| **MVP progress** | 50% (11/22 MVP features: Phases 0–3 + 4.1) |
-| **Last milestone** | Phase 1 complete — `analyze --static-only` produces RouteGraph at 100% fixture recall |
-| **Next milestone** | Feature 2.1 complete — LLM client abstraction |
+| **MVP progress** | 59% (13/22 MVP features: Phases 0–3 + 4.1) |
+| **Last milestone** | Feature 2.2 complete — Reasoner Stage 1: Domain classification |
+| **Next milestone** | Feature 2.3 complete — Reasoner Stage 2: Intent labeling |
 
 ---
 
 ## Current Focus
 
-**Nothing in progress.** Phase 1 gate G1 passed. Ready to begin **Phase 2 — Feature 2.1 (LLM client abstraction)**.
+**Nothing in progress.** Feature 2.2 complete. Ready to begin **Feature 2.3 — Reasoner Stage 2: Intent labeling**.
 
 ---
 
 ## Next Up
 
-1. **Feature 2.1** — LLM client abstraction
-2. **Feature 2.2** — Reasoner Stage 1: Domain classification
-3. **Feature 2.3** — Reasoner Stage 2: Intent labeling
+1. **Feature 2.3** — Reasoner Stage 2: Intent labeling
+2. **Feature 2.4** — Reasoner Stage 3: Capability grouping
+3. **Feature 2.5** — Reasoner Stage 4: Self-refine
 
 ---
 
@@ -106,8 +106,8 @@ When **blocked**:
 
 | Feature | Name | Status | Completed | Notes |
 |---|---|---|---|---|
-| 2.1 | LLM client abstraction | not_started | — | |
-| 2.2 | Reasoner Stage 1: Domain classification | not_started | — | |
+| 2.1 | LLM client abstraction | done | 2026-06-12 | `LlmClient` + mock/OpenAI/Anthropic providers; Zod JSON validation; retry/timeout; usage/cost tracking |
+| 2.2 | Reasoner Stage 1: Domain classification | done | 2026-06-12 | Versioned `domain.v1` prompt; `classifyDomain` + RouteGraph input builders; fixture classified as `ecommerce` |
 | 2.3 | Reasoner Stage 2: Intent labeling | not_started | — | |
 | 2.4 | Reasoner Stage 3: Capability grouping | not_started | — | Hardest feature |
 | 2.5 | Reasoner Stage 4: Self-refine | not_started | — | |
@@ -190,7 +190,11 @@ When **blocked**:
 
 | Date | Feature | Decision | Rationale |
 |---|---|---|---|
-| 2026-06-12 | 1.6 | Gate full `analyze` behind `--static-only` until Phase 2 LLM pipeline ships | Phase 1 exit is static RouteGraph only; avoids implying capabilities are generated |
+| 2026-06-12 | 2.2 | Route prefixes = first two URL path segments (e.g. `/api/products`) | Stable grouping signal without overfitting to individual route paths |
+| 2026-06-12 | 2.2 | Domain types live in `reasoner/prompts/domain.v1.ts` co-located with prompt | Keeps versioned prompt + Zod schema together per code-standards |
+| 2026-06-12 | 2.1 | Use native `fetch` for OpenAI/Anthropic (no provider SDK deps) | Matches code-standards; keeps SDK thin; injectable `fetchImpl` for tests |
+| 2026-06-12 | 2.1 | Default API key env vars: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`; override via `config.llm.apiKeyEnvVar` | Real providers configurable via env without code changes |
+| 2026-06-12 | 2.1 | `LlmUsageTracker` accumulates per-run tokens/cost; consumed later by `analysis-meta.json` writer (2.7) | Separates tracking from artifact I/O |
 | 2026-06-12 | 1.6 | Write debug artifact as versioned `.agent-layer/route-graph.json` wrapper | Keeps RouteGraph serializable without committing a schema file yet |
 | 2026-06-12 | 1.5 | Add `RouteCallGraphInfo` and `extractCallGraph` on `FrameworkAdapter` | Keeps call graph separate from type extraction; RouteGraph builder (1.6) merges all layers |
 | 2026-06-12 | 1.5 | Load all `fileGraph.nodes` into ts-morph project for call tracing | Service/repository files are not in `routeFiles`; import graph provides analysis scope |
@@ -223,7 +227,8 @@ When **blocked**:
 
 ## Notes
 
-- **Phase 1 static analysis is complete (G1 passed).** `agent-layer analyze --static-only` on the fixture yields 7/7 routes (100% recall), writes `.agent-layer/route-graph.json`, and reports warnings on stderr.
+- **Domain classification is in place.** `classifyDomainFromRouteGraph()` builds input from entity names + route prefixes + package name, calls versioned `domain.v1` prompt via `LlmClient`, and validates structured output.
+- **LLM client abstraction is in place.** `createLlmClient(config)` returns a provider-backed client with structured JSON validation, 2× retry + exponential backoff, 60s timeout, and cumulative usage/cost tracking via `getUsage()`.
 - **Call graph extraction is in place.** Cart routes trace `handler → CartService.*` with `CartEntity` in `databaseEntities`; handler `sourceCode` captured for LLM context.
 - **Route and type extraction are in place.** `nestJsFrameworkAdapter.extractRoutes()` returns all 7 fixture routes with correct method/path/middleware; `extractTypes()` produces JSON Schema for DTOs and entities (validated on `POST /api/cart/items`).
 - **Project scanner is in place.** `scanProject()` returns a typed `ScanContext` with controller/DTO/entity file lists and an import dependency graph for the fixture app.
@@ -247,4 +252,4 @@ When **blocked**:
 
 ---
 
-**Last updated:** 2026-06-12 — Feature 1.6 completed. Phase 1 exit: RouteGraph builder + `analyze --static-only` CLI with 100% fixture route recall.
+**Last updated:** 2026-06-12 — Feature 2.2 completed. Reasoner Stage 1 domain classification with versioned prompt, RouteGraph input builders, and fixture ecommerce classification test.
