@@ -24,8 +24,14 @@ describe("nestjs ecommerce ground truth", () => {
     ) as GroundTruthDocument;
 
     expect(document.fixture).toBe("nestjs-ecommerce");
-    expect(document.routes).toHaveLength(7);
+    expect(document.routes.length).toBeGreaterThanOrEqual(60);
     expect(document.routes.map((route) => route.id)).toContain("cart_add_item");
+    expect(document.routes.map((route) => route.id)).toContain("orders_create");
+    expect(document.routes.map((route) => route.id)).toContain("payments_process");
+    expect(document.routes.map((route) => route.id)).toContain("reviews_add");
+    expect(document.routes.map((route) => route.id)).toContain("wishlist_get");
+    expect(document.routes.map((route) => route.id)).toContain("notifications_list");
+    expect(document.routes.map((route) => route.id)).toContain("admin_dashboard_stats");
     expect(document.routes.every((route) => route.path.startsWith("/api/"))).toBe(
       true
     );

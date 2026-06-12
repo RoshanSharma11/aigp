@@ -1,5 +1,78 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-12T11:11:57.214Z",
-  "entries": []
+  "generatedAt": "2026-06-12T11:54:29.425Z",
+  "entries": [
+    {
+      "capabilityId": "admin_management",
+      "reasons": [
+        "Adjusted confidence 0.82 is below 0.85",
+        "Consistency issue: auth_conflict"
+      ],
+      "confidence": 0.8200000000000001,
+      "flags": [
+        "consistency_issue",
+        "low_confidence"
+      ]
+    },
+    {
+      "capabilityId": "customer_management",
+      "reasons": [
+        "Adjusted confidence 0.80 is below 0.85",
+        "Consistency issue: auth_conflict"
+      ],
+      "confidence": 0.8,
+      "flags": [
+        "consistency_issue",
+        "low_confidence"
+      ]
+    },
+    {
+      "capabilityId": "notification_management",
+      "reasons": [
+        "Adjusted confidence 0.77 is below 0.85",
+        "Consistency issue: auth_conflict"
+      ],
+      "confidence": 0.77,
+      "flags": [
+        "consistency_issue",
+        "low_confidence"
+      ]
+    },
+    {
+      "capabilityId": "order_management",
+      "reasons": [
+        "Adjusted confidence 0.81 is below 0.85",
+        "Consistency issue: auth_conflict"
+      ],
+      "confidence": 0.81,
+      "flags": [
+        "consistency_issue",
+        "low_confidence"
+      ]
+    },
+    {
+      "capabilityId": "payment_processing",
+      "reasons": [
+        "Adjusted confidence 0.81 is below 0.85",
+        "Consistency issue: auth_conflict"
+      ],
+      "confidence": 0.81,
+      "flags": [
+        "consistency_issue",
+        "low_confidence"
+      ]
+    },
+    {
+      "capabilityId": "wishlist_management",
+      "reasons": [
+        "Adjusted confidence 0.78 is below 0.85",
+        "Consistency issue: auth_conflict"
+      ],
+      "confidence": 0.78,
+      "flags": [
+        "consistency_issue",
+        "low_confidence"
+      ]
+    }
+  ]
 }

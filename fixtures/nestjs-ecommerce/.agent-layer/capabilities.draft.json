@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-12T11:11:57.214Z",
+  "generatedAt": "2026-06-12T11:54:29.425Z",
   "capabilities": [
     {
       "id": "account_access",
@@ -46,53 +46,382 @@
             ]
           },
           "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "DELETE",
+          "httpPath": "/api/auth/account",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/auth/logout",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/auth/me",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/auth/refresh-token",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "refreshToken": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "refreshToken"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "accessToken": {
+                "type": "string"
+              },
+              "refreshToken": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "accessToken",
+              "refreshToken"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/auth/register",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "password": {
+                "type": "string",
+                "minLength": 6
+              },
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "email",
+              "password"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "accessToken": {
+                "type": "string"
+              },
+              "refreshToken": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "accessToken",
+              "refreshToken"
+            ]
+          },
+          "sideEffects": "write"
         }
       ],
-      "defaultOperation": "login",
+      "defaultOperation": "unknown_route",
       "inputSchema": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "password": {
-            "type": "string",
-            "minLength": 8
-          }
-        },
-        "required": [
-          "email",
-          "password"
-        ]
+        "type": "object"
       },
       "outputSchema": {
-        "type": "object",
-        "properties": {
-          "accessToken": {
-            "type": "string"
-          },
-          "refreshToken": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "accessToken",
-          "refreshToken"
-        ]
+        "type": "object"
       },
-      "sideEffects": "write",
+      "sideEffects": "transactional",
       "requiresAuth": false,
       "followedBy": [
-        "cart_management"
+        "admin_management",
+        "cart_management",
+        "customer_management",
+        "notification_management",
+        "order_management",
+        "payment_processing",
+        "wishlist_management"
       ],
       "reversible": true,
       "confirmationRequired": false,
       "riskLevel": "medium",
-      "confidence": 0.976,
+      "confidence": 0.864,
       "needsHumanReview": false,
       "sourceRoutes": [
-        "POST /api/auth/login"
+        "DELETE /api/auth/account",
+        "GET /api/auth/me",
+        "POST /api/auth/login",
+        "POST /api/auth/logout",
+        "POST /api/auth/refresh-token",
+        "POST /api/auth/register"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "admin_management",
+      "name": "Admin Management",
+      "description": "Administrative functions for managing the platform",
+      "category": "admin",
+      "operations": [
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/admin/analytics/products",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/admin/dashboard/stats",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "totalUsers": {
+                "type": "number"
+              },
+              "totalOrders": {
+                "type": "number"
+              },
+              "totalRevenue": {
+                "type": "number"
+              },
+              "averageOrderValue": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "totalUsers",
+              "totalOrders",
+              "totalRevenue",
+              "averageOrderValue"
+            ]
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/admin/reports/revenue",
+          "inputSchema": {
+            "type": "string"
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/admin/users",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "role": {
+                "type": "string"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "DELETE",
+          "httpPath": "/api/admin/users/:userId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "userId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/admin/users/:userId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "userId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "role",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/admin/users/:userId/role",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "userId",
+              "role"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "role",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "write"
+        }
+      ],
+      "defaultOperation": "unknown_route",
+      "inputSchema": {
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object"
+      },
+      "sideEffects": "transactional",
+      "requiresAuth": true,
+      "prerequisites": [
+        "account_access"
+      ],
+      "reversible": true,
+      "confirmationRequired": false,
+      "riskLevel": "low",
+      "confidence": 0.835,
+      "needsHumanReview": true,
+      "sourceRoutes": [
+        "DELETE /api/admin/users/:userId",
+        "GET /api/admin/analytics/products",
+        "GET /api/admin/dashboard/stats",
+        "GET /api/admin/reports/revenue",
+        "GET /api/admin/users",
+        "GET /api/admin/users/:userId",
+        "POST /api/admin/users/:userId/role"
       ],
       "status": "draft"
     },
@@ -149,12 +478,35 @@
                     "quantity"
                   ]
                 }
+              },
+              "appliedCoupons": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "discountPercentage": {
+                      "type": "number"
+                    },
+                    "appliedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "discountPercentage",
+                    "appliedAt"
+                  ]
+                }
               }
             },
             "required": [
               "id",
               "userId",
-              "items"
+              "items",
+              "appliedCoupons"
             ]
           },
           "sideEffects": "write"
@@ -193,15 +545,307 @@
                     "quantity"
                   ]
                 }
+              },
+              "appliedCoupons": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "discountPercentage": {
+                      "type": "number"
+                    },
+                    "appliedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "discountPercentage",
+                    "appliedAt"
+                  ]
+                }
               }
             },
             "required": [
               "id",
               "userId",
-              "items"
+              "items",
+              "appliedCoupons"
             ]
           },
           "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/cart/apply-coupon",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "couponCode": {
+                "type": "string"
+              },
+              "discountPercentage": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "couponCode",
+              "discountPercentage"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity"
+                  ]
+                }
+              },
+              "appliedCoupons": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "discountPercentage": {
+                      "type": "number"
+                    },
+                    "appliedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "discountPercentage",
+                    "appliedAt"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items",
+              "appliedCoupons"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/cart/clear",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "DELETE",
+          "httpPath": "/api/cart/coupon/:couponCode",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "couponCode": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "couponCode"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity"
+                  ]
+                }
+              },
+              "appliedCoupons": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "discountPercentage": {
+                      "type": "number"
+                    },
+                    "appliedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "discountPercentage",
+                    "appliedAt"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items",
+              "appliedCoupons"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/cart/summary",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/cart/validate",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "update_cart_item",
+          "description": "Update quantity for a cart line item",
+          "httpMethod": "DELETE",
+          "httpPath": "/api/cart/items/:productId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity"
+                  ]
+                }
+              },
+              "appliedCoupons": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "discountPercentage": {
+                      "type": "number"
+                    },
+                    "appliedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "discountPercentage",
+                    "appliedAt"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items",
+              "appliedCoupons"
+            ]
+          },
+          "sideEffects": "write"
         },
         {
           "id": "update_cart_item",
@@ -250,12 +894,35 @@
                     "quantity"
                   ]
                 }
+              },
+              "appliedCoupons": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "discountPercentage": {
+                      "type": "number"
+                    },
+                    "appliedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "discountPercentage",
+                    "appliedAt"
+                  ]
+                }
               }
             },
             "required": [
               "id",
               "userId",
-              "items"
+              "items",
+              "appliedCoupons"
             ]
           },
           "sideEffects": "write"
@@ -291,12 +958,35 @@
                 "quantity"
               ]
             }
+          },
+          "appliedCoupons": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "discountPercentage": {
+                  "type": "number"
+                },
+                "appliedAt": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "discountPercentage",
+                "appliedAt"
+              ]
+            }
           }
         },
         "required": [
           "id",
           "userId",
-          "items"
+          "items",
+          "appliedCoupons"
         ]
       },
       "sideEffects": "transactional",
@@ -307,12 +997,1535 @@
       "reversible": true,
       "confirmationRequired": false,
       "riskLevel": "medium",
-      "confidence": 0.924,
+      "confidence": 0.88,
       "needsHumanReview": false,
       "sourceRoutes": [
+        "DELETE /api/cart/coupon/:couponCode",
+        "DELETE /api/cart/items/:productId",
         "GET /api/cart",
+        "GET /api/cart/summary",
         "PATCH /api/cart/items/:productId",
-        "POST /api/cart/items"
+        "POST /api/cart/apply-coupon",
+        "POST /api/cart/clear",
+        "POST /api/cart/items",
+        "POST /api/cart/validate"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "customer_management",
+      "name": "Customer Management",
+      "description": "Manage customer profiles and addresses",
+      "category": "customers",
+      "operations": [
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/customers/me",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "tier": {},
+              "addresses": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "line1": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "region": {
+                      "type": "string"
+                    },
+                    "postalCode": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    },
+                    "isDefault": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "line1",
+                    "city",
+                    "region",
+                    "postalCode",
+                    "country",
+                    "isDefault"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "name",
+              "tier",
+              "addresses"
+            ]
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "PATCH",
+          "httpPath": "/api/customers/me",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 2
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "tier": {},
+              "addresses": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "line1": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "region": {
+                      "type": "string"
+                    },
+                    "postalCode": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    },
+                    "isDefault": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "line1",
+                    "city",
+                    "region",
+                    "postalCode",
+                    "country",
+                    "isDefault"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "name",
+              "tier",
+              "addresses"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/customers/me/addresses",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "line1": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "isDefault": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "line1",
+                "city",
+                "region",
+                "postalCode",
+                "country",
+                "isDefault"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/customers/me/addresses",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "line1": {
+                "type": "string",
+                "minLength": 3
+              },
+              "city": {
+                "type": "string"
+              },
+              "region": {
+                "type": "string"
+              },
+              "postalCode": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string"
+              },
+              "isDefault": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "label",
+              "line1",
+              "city",
+              "region",
+              "postalCode",
+              "country"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "tier": {},
+              "addresses": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "line1": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "region": {
+                      "type": "string"
+                    },
+                    "postalCode": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    },
+                    "isDefault": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "line1",
+                    "city",
+                    "region",
+                    "postalCode",
+                    "country",
+                    "isDefault"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "name",
+              "tier",
+              "addresses"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "DELETE",
+          "httpPath": "/api/customers/me/addresses/:addressId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "addressId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "addressId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "tier": {},
+              "addresses": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "line1": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "region": {
+                      "type": "string"
+                    },
+                    "postalCode": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    },
+                    "isDefault": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "line1",
+                    "city",
+                    "region",
+                    "postalCode",
+                    "country",
+                    "isDefault"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "name",
+              "tier",
+              "addresses"
+            ]
+          },
+          "sideEffects": "write"
+        }
+      ],
+      "defaultOperation": "unknown_route",
+      "inputSchema": {
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tier": {},
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "line1": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "isDefault": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "line1",
+                "city",
+                "region",
+                "postalCode",
+                "country",
+                "isDefault"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "tier",
+          "addresses"
+        ]
+      },
+      "sideEffects": "transactional",
+      "requiresAuth": true,
+      "prerequisites": [
+        "account_access"
+      ],
+      "reversible": true,
+      "confirmationRequired": false,
+      "riskLevel": "low",
+      "confidence": 0.879,
+      "needsHumanReview": true,
+      "sourceRoutes": [
+        "DELETE /api/customers/me/addresses/:addressId",
+        "GET /api/customers/me",
+        "GET /api/customers/me/addresses",
+        "PATCH /api/customers/me",
+        "POST /api/customers/me/addresses"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "notification_management",
+      "name": "Notification Management",
+      "description": "Manage user notifications and preferences",
+      "category": "notifications",
+      "operations": [
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/notifications",
+          "inputSchema": {
+            "type": "string"
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "userId": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "read": {
+                  "type": "boolean"
+                },
+                "createdAt": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "userId",
+                "type",
+                "title",
+                "message",
+                "read",
+                "createdAt"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "DELETE",
+          "httpPath": "/api/notifications/:notificationId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "notificationId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "notificationId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/notifications/:notificationId/read",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "notificationId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "notificationId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "read": {
+                "type": "boolean"
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "type",
+              "title",
+              "message",
+              "read",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/notifications/preferences",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/notifications/preferences",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "emailNotifications": {
+                "type": "boolean"
+              },
+              "pushNotifications": {
+                "type": "boolean"
+              },
+              "smsNotifications": {
+                "type": "boolean"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        }
+      ],
+      "defaultOperation": "unknown_route",
+      "inputSchema": {
+        "type": "string"
+      },
+      "outputSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            },
+            "read": {
+              "type": "boolean"
+            },
+            "createdAt": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "userId",
+            "type",
+            "title",
+            "message",
+            "read",
+            "createdAt"
+          ]
+        }
+      },
+      "sideEffects": "transactional",
+      "requiresAuth": true,
+      "prerequisites": [
+        "account_access"
+      ],
+      "reversible": true,
+      "confirmationRequired": false,
+      "riskLevel": "low",
+      "confidence": 0.827,
+      "needsHumanReview": true,
+      "sourceRoutes": [
+        "DELETE /api/notifications/:notificationId",
+        "GET /api/notifications",
+        "GET /api/notifications/preferences",
+        "POST /api/notifications/:notificationId/read",
+        "POST /api/notifications/preferences"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "order_management",
+      "name": "Order Management",
+      "description": "Create and track customer orders",
+      "category": "orders",
+      "operations": [
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/orders",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/orders",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "priceCents": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity",
+                    "priceCents"
+                  ]
+                }
+              },
+              "deliveryAddress": {
+                "type": "string"
+              },
+              "couponCode": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "items"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    },
+                    "priceCents": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity",
+                    "priceCents"
+                  ]
+                }
+              },
+              "totalCents": {
+                "type": "number"
+              },
+              "status": {},
+              "createdAt": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              },
+              "deliveryAddress": {
+                "type": "string"
+              },
+              "trackingNumber": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items",
+              "totalCents",
+              "status",
+              "createdAt",
+              "updatedAt",
+              "deliveryAddress",
+              "trackingNumber"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "DELETE",
+          "httpPath": "/api/orders/:orderId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "orderId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "orderId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    },
+                    "priceCents": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity",
+                    "priceCents"
+                  ]
+                }
+              },
+              "totalCents": {
+                "type": "number"
+              },
+              "status": {},
+              "createdAt": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              },
+              "deliveryAddress": {
+                "type": "string"
+              },
+              "trackingNumber": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items",
+              "totalCents",
+              "status",
+              "createdAt",
+              "updatedAt",
+              "deliveryAddress",
+              "trackingNumber"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/orders/:orderId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "orderId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "orderId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    },
+                    "priceCents": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity",
+                    "priceCents"
+                  ]
+                }
+              },
+              "totalCents": {
+                "type": "number"
+              },
+              "status": {},
+              "createdAt": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              },
+              "deliveryAddress": {
+                "type": "string"
+              },
+              "trackingNumber": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items",
+              "totalCents",
+              "status",
+              "createdAt",
+              "updatedAt",
+              "deliveryAddress",
+              "trackingNumber"
+            ]
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/orders/:orderId/coupon",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "orderId": {
+                "type": "string"
+              },
+              "couponCode": {
+                "type": "string"
+              },
+              "discountCents": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "orderId",
+              "couponCode",
+              "discountCents"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    },
+                    "priceCents": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity",
+                    "priceCents"
+                  ]
+                }
+              },
+              "totalCents": {
+                "type": "number"
+              },
+              "status": {},
+              "createdAt": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              },
+              "deliveryAddress": {
+                "type": "string"
+              },
+              "trackingNumber": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items",
+              "totalCents",
+              "status",
+              "createdAt",
+              "updatedAt",
+              "deliveryAddress",
+              "trackingNumber"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/orders/:orderId/delivery-address",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "orderId": {
+                "type": "string"
+              },
+              "address": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "postalCode": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "orderId",
+              "address",
+              "city",
+              "postalCode"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    },
+                    "priceCents": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity",
+                    "priceCents"
+                  ]
+                }
+              },
+              "totalCents": {
+                "type": "number"
+              },
+              "status": {},
+              "createdAt": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              },
+              "deliveryAddress": {
+                "type": "string"
+              },
+              "trackingNumber": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items",
+              "totalCents",
+              "status",
+              "createdAt",
+              "updatedAt",
+              "deliveryAddress",
+              "trackingNumber"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/orders/:orderId/invoice",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "orderId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "orderId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/orders/:orderId/track",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "orderId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "orderId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "read"
+        }
+      ],
+      "defaultOperation": "unknown_route",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object"
+      },
+      "sideEffects": "transactional",
+      "requiresAuth": true,
+      "prerequisites": [
+        "account_access"
+      ],
+      "reversible": true,
+      "confirmationRequired": false,
+      "riskLevel": "low",
+      "confidence": 0.882,
+      "needsHumanReview": true,
+      "sourceRoutes": [
+        "DELETE /api/orders/:orderId",
+        "GET /api/orders",
+        "GET /api/orders/:orderId",
+        "GET /api/orders/:orderId/invoice",
+        "GET /api/orders/:orderId/track",
+        "POST /api/orders",
+        "POST /api/orders/:orderId/coupon",
+        "POST /api/orders/:orderId/delivery-address"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "payment_processing",
+      "name": "Payment Processing",
+      "description": "Process payments and manage payment methods",
+      "category": "payments",
+      "operations": [
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/payments/history/:orderId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "orderId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "orderId"
+            ]
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "orderId": {
+                  "type": "string"
+                },
+                "amountCents": {
+                  "type": "number"
+                },
+                "status": {},
+                "method": {
+                  "type": "string"
+                },
+                "transactionId": {
+                  "type": "string"
+                },
+                "createdAt": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "orderId",
+                "amountCents",
+                "status",
+                "method",
+                "transactionId",
+                "createdAt"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/payments/process",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "orderId": {
+                "type": "string"
+              },
+              "amountCents": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "method": {
+                "type": "string"
+              },
+              "cardToken": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "orderId",
+              "amountCents",
+              "method"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "orderId": {
+                "type": "string"
+              },
+              "amountCents": {
+                "type": "number"
+              },
+              "status": {},
+              "method": {
+                "type": "string"
+              },
+              "transactionId": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "orderId",
+              "amountCents",
+              "status",
+              "method",
+              "transactionId",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/payments/refund",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "paymentId": {
+                "type": "string"
+              },
+              "amountCents": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "paymentId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "orderId": {
+                "type": "string"
+              },
+              "amountCents": {
+                "type": "number"
+              },
+              "status": {},
+              "method": {
+                "type": "string"
+              },
+              "transactionId": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "orderId",
+              "amountCents",
+              "status",
+              "method",
+              "transactionId",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "write"
+        }
+      ],
+      "defaultOperation": "unknown_route",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "orderId"
+        ]
+      },
+      "outputSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "orderId": {
+              "type": "string"
+            },
+            "amountCents": {
+              "type": "number"
+            },
+            "status": {},
+            "method": {
+              "type": "string"
+            },
+            "transactionId": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "orderId",
+            "amountCents",
+            "status",
+            "method",
+            "transactionId",
+            "createdAt"
+          ]
+        }
+      },
+      "sideEffects": "transactional",
+      "requiresAuth": true,
+      "prerequisites": [
+        "account_access"
+      ],
+      "reversible": true,
+      "confirmationRequired": false,
+      "riskLevel": "low",
+      "confidence": 0.923,
+      "needsHumanReview": true,
+      "sourceRoutes": [
+        "GET /api/payments/history/:orderId",
+        "POST /api/payments/process",
+        "POST /api/payments/refund"
       ],
       "status": "draft"
     },
@@ -322,6 +2535,27 @@
       "description": "Browse and search products in the store catalog",
       "category": "catalog",
       "operations": [
+        {
+          "id": "get_product",
+          "description": "Get a single product by ID",
+          "httpMethod": "DELETE",
+          "httpPath": "/api/products/:productId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        },
         {
           "id": "get_product",
           "description": "Get a single product by ID",
@@ -347,6 +2581,15 @@
               "name": {
                 "type": "string"
               },
+              "slug": {
+                "type": "string"
+              },
+              "brand": {
+                "type": "string"
+              },
+              "categoryId": {
+                "type": "string"
+              },
               "priceCents": {
                 "type": "number"
               },
@@ -355,14 +2598,34 @@
               },
               "inStock": {
                 "type": "boolean"
-              }
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ratingAverage": {
+                "type": "number"
+              },
+              "reviewCount": {
+                "type": "number"
+              },
+              "featured": {}
             },
             "required": [
               "id",
               "name",
+              "slug",
+              "brand",
+              "categoryId",
               "priceCents",
               "currency",
-              "inStock"
+              "inStock",
+              "tags",
+              "ratingAverage",
+              "reviewCount",
+              "featured"
             ]
           },
           "sideEffects": "read"
@@ -386,6 +2649,15 @@
                 "name": {
                   "type": "string"
                 },
+                "slug": {
+                  "type": "string"
+                },
+                "brand": {
+                  "type": "string"
+                },
+                "categoryId": {
+                  "type": "string"
+                },
                 "priceCents": {
                   "type": "number"
                 },
@@ -394,18 +2666,146 @@
                 },
                 "inStock": {
                   "type": "boolean"
-                }
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "ratingAverage": {
+                  "type": "number"
+                },
+                "reviewCount": {
+                  "type": "number"
+                },
+                "featured": {}
               },
               "required": [
                 "id",
                 "name",
+                "slug",
+                "brand",
+                "categoryId",
                 "priceCents",
                 "currency",
-                "inStock"
+                "inStock",
+                "tags",
+                "ratingAverage",
+                "reviewCount",
+                "featured"
               ]
             }
           },
           "sideEffects": "read"
+        },
+        {
+          "id": "list_products",
+          "description": "List all products in the catalog",
+          "httpMethod": "POST",
+          "httpPath": "/api/products",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string"
+              },
+              "categoryId": {
+                "type": "string"
+              },
+              "priceCents": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string"
+              },
+              "brand": {
+                "type": "string"
+              },
+              "initialStock": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "tags": {
+                "type": "string",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "featured": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "categoryId",
+              "priceCents",
+              "currency",
+              "initialStock"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "brand": {
+                "type": "string"
+              },
+              "categoryId": {
+                "type": "string"
+              },
+              "priceCents": {
+                "type": "number"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "inStock": {
+                "type": "boolean"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ratingAverage": {
+                "type": "number"
+              },
+              "reviewCount": {
+                "type": "number"
+              },
+              "featured": {}
+            },
+            "required": [
+              "id",
+              "name",
+              "slug",
+              "brand",
+              "categoryId",
+              "priceCents",
+              "currency",
+              "inStock",
+              "tags",
+              "ratingAverage",
+              "reviewCount",
+              "featured"
+            ]
+          },
+          "sideEffects": "write"
         },
         {
           "id": "search_products",
@@ -418,6 +2818,20 @@
               "query": {
                 "type": "string",
                 "minLength": 2
+              },
+              "categoryId": {
+                "type": "string"
+              },
+              "minPriceCents": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "maxPriceCents": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "inStockOnly": {
+                "type": "boolean"
               }
             }
           },
@@ -432,6 +2846,15 @@
                 "name": {
                   "type": "string"
                 },
+                "slug": {
+                  "type": "string"
+                },
+                "brand": {
+                  "type": "string"
+                },
+                "categoryId": {
+                  "type": "string"
+                },
                 "priceCents": {
                   "type": "number"
                 },
@@ -440,14 +2863,536 @@
                 },
                 "inStock": {
                   "type": "boolean"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "ratingAverage": {
+                  "type": "number"
+                },
+                "reviewCount": {
+                  "type": "number"
+                },
+                "featured": {}
+              },
+              "required": [
+                "id",
+                "name",
+                "slug",
+                "brand",
+                "categoryId",
+                "priceCents",
+                "currency",
+                "inStock",
+                "tags",
+                "ratingAverage",
+                "reviewCount",
+                "featured"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/products/:productId/inventory",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "number"
+              },
+              "reserved": {
+                "type": "number"
+              },
+              "available": {
+                "type": "number"
+              },
+              "warehouseLocations": {
+                "type": "array",
+                "items": {}
+              }
+            },
+            "required": [
+              "productId",
+              "quantity",
+              "reserved",
+              "available",
+              "warehouseLocations"
+            ]
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/products/:productId/recommendations",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId"
+            ]
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "score": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "productId",
+                "reason",
+                "score"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/products/:productId/similar",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId"
+            ]
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "brand": {
+                  "type": "string"
+                },
+                "categoryId": {
+                  "type": "string"
+                },
+                "priceCents": {
+                  "type": "number"
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "inStock": {
+                  "type": "boolean"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "ratingAverage": {
+                  "type": "number"
+                },
+                "reviewCount": {
+                  "type": "number"
+                },
+                "featured": {}
+              },
+              "required": [
+                "id",
+                "name",
+                "slug",
+                "brand",
+                "categoryId",
+                "priceCents",
+                "currency",
+                "inStock",
+                "tags",
+                "ratingAverage",
+                "reviewCount",
+                "featured"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/products/bulk-import",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "products": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "categoryId": {
+                      "type": "string"
+                    },
+                    "priceCents": {
+                      "type": "number"
+                    },
+                    "currency": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "categoryId",
+                    "priceCents",
+                    "currency"
+                  ]
+                }
+              },
+              "batchSize": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "products"
+            ]
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/products/categories",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "parentId": {
+                  "type": "string"
                 }
               },
               "required": [
                 "id",
                 "name",
+                "parentId"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/products/categories/:categoryId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "categoryId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "categoryId"
+            ]
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "brand": {
+                  "type": "string"
+                },
+                "categoryId": {
+                  "type": "string"
+                },
+                "priceCents": {
+                  "type": "number"
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "inStock": {
+                  "type": "boolean"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "ratingAverage": {
+                  "type": "number"
+                },
+                "reviewCount": {
+                  "type": "number"
+                },
+                "featured": {}
+              },
+              "required": [
+                "id",
+                "name",
+                "slug",
+                "brand",
+                "categoryId",
                 "priceCents",
                 "currency",
-                "inStock"
+                "inStock",
+                "tags",
+                "ratingAverage",
+                "reviewCount",
+                "featured"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/products/categories/:categoryId/subcategories",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "categoryId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "categoryId"
+            ]
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "parentId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "parentId"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/products/featured",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "brand": {
+                  "type": "string"
+                },
+                "categoryId": {
+                  "type": "string"
+                },
+                "priceCents": {
+                  "type": "number"
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "inStock": {
+                  "type": "boolean"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "ratingAverage": {
+                  "type": "number"
+                },
+                "reviewCount": {
+                  "type": "number"
+                },
+                "featured": {}
+              },
+              "required": [
+                "id",
+                "name",
+                "slug",
+                "brand",
+                "categoryId",
+                "priceCents",
+                "currency",
+                "inStock",
+                "tags",
+                "ratingAverage",
+                "reviewCount",
+                "featured"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/products/trending",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "brand": {
+                  "type": "string"
+                },
+                "categoryId": {
+                  "type": "string"
+                },
+                "priceCents": {
+                  "type": "number"
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "inStock": {
+                  "type": "boolean"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "ratingAverage": {
+                  "type": "number"
+                },
+                "reviewCount": {
+                  "type": "number"
+                },
+                "featured": {}
+              },
+              "required": [
+                "id",
+                "name",
+                "slug",
+                "brand",
+                "categoryId",
+                "priceCents",
+                "currency",
+                "inStock",
+                "tags",
+                "ratingAverage",
+                "reviewCount",
+                "featured"
               ]
             }
           },
@@ -467,43 +3412,601 @@
         ]
       },
       "outputSchema": {
+        "type": "object"
+      },
+      "sideEffects": "transactional",
+      "requiresAuth": false,
+      "reversible": true,
+      "confirmationRequired": false,
+      "riskLevel": "low",
+      "confidence": 0.917,
+      "needsHumanReview": false,
+      "sourceRoutes": [
+        "DELETE /api/products/:productId",
+        "GET /api/products",
+        "GET /api/products/:productId",
+        "GET /api/products/:productId/inventory",
+        "GET /api/products/:productId/recommendations",
+        "GET /api/products/:productId/similar",
+        "GET /api/products/categories",
+        "GET /api/products/categories/:categoryId",
+        "GET /api/products/categories/:categoryId/subcategories",
+        "GET /api/products/featured",
+        "GET /api/products/search",
+        "GET /api/products/trending",
+        "POST /api/products",
+        "POST /api/products/bulk-import"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "review_management",
+      "name": "Review Management",
+      "description": "Create and browse product reviews",
+      "category": "reviews",
+      "operations": [
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/reviews",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              },
+              "rating": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId",
+              "rating",
+              "title",
+              "content"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "productId": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "rating": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              },
+              "helpful": {
+                "type": "number"
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "productId",
+              "userId",
+              "rating",
+              "title",
+              "content",
+              "helpful",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "DELETE",
+          "httpPath": "/api/reviews/:reviewId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "reviewId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "reviewId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "PATCH",
+          "httpPath": "/api/reviews/:reviewId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "reviewId": {
+                "type": "string"
+              },
+              "rating": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "reviewId",
+              "rating",
+              "title",
+              "content"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "productId": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "rating": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              },
+              "helpful": {
+                "type": "number"
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "productId",
+              "userId",
+              "rating",
+              "title",
+              "content",
+              "helpful",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/reviews/:reviewId/helpful",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "reviewId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "reviewId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "productId": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "rating": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              },
+              "helpful": {
+                "type": "number"
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "productId",
+              "userId",
+              "rating",
+              "title",
+              "content",
+              "helpful",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/reviews/product/:productId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId"
+            ]
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "productId": {
+                  "type": "string"
+                },
+                "userId": {
+                  "type": "string"
+                },
+                "rating": {
+                  "type": "number"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "helpful": {
+                  "type": "number"
+                },
+                "createdAt": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "productId",
+                "userId",
+                "rating",
+                "title",
+                "content",
+                "helpful",
+                "createdAt"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        }
+      ],
+      "defaultOperation": "unknown_route",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productId",
+          "rating",
+          "title",
+          "content"
+        ]
+      },
+      "outputSchema": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
-          "name": {
+          "productId": {
             "type": "string"
           },
-          "priceCents": {
+          "userId": {
+            "type": "string"
+          },
+          "rating": {
             "type": "number"
           },
-          "currency": {
+          "title": {
             "type": "string"
           },
-          "inStock": {
-            "type": "boolean"
+          "content": {
+            "type": "string"
+          },
+          "helpful": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string"
           }
         },
         "required": [
           "id",
-          "name",
-          "priceCents",
-          "currency",
-          "inStock"
+          "productId",
+          "userId",
+          "rating",
+          "title",
+          "content",
+          "helpful",
+          "createdAt"
         ]
       },
-      "sideEffects": "read",
+      "sideEffects": "transactional",
       "requiresAuth": false,
       "reversible": true,
       "confirmationRequired": false,
       "riskLevel": "low",
-      "confidence": 0.935,
+      "confidence": 0.919,
       "needsHumanReview": false,
       "sourceRoutes": [
-        "GET /api/products",
-        "GET /api/products/:productId",
-        "GET /api/products/search"
+        "DELETE /api/reviews/:reviewId",
+        "GET /api/reviews/product/:productId",
+        "PATCH /api/reviews/:reviewId",
+        "POST /api/reviews",
+        "POST /api/reviews/:reviewId/helpful"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "wishlist_management",
+      "name": "Wishlist Management",
+      "description": "Manage customer wishlists",
+      "category": "wishlist",
+      "operations": [
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "GET",
+          "httpPath": "/api/wishlist",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "productIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "productIds",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "DELETE",
+          "httpPath": "/api/wishlist/:productId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "productIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "productIds",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/wishlist/add",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "productIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "productIds",
+              "createdAt"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "unknown_route",
+          "description": "Unknown route",
+          "httpMethod": "POST",
+          "httpPath": "/api/wishlist/share",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "email"
+            ]
+          },
+          "outputSchema": {
+            "type": "object"
+          },
+          "sideEffects": "write"
+        }
+      ],
+      "defaultOperation": "unknown_route",
+      "inputSchema": {
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "productIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "productIds",
+          "createdAt"
+        ]
+      },
+      "sideEffects": "transactional",
+      "requiresAuth": true,
+      "prerequisites": [
+        "account_access"
+      ],
+      "reversible": true,
+      "confirmationRequired": false,
+      "riskLevel": "low",
+      "confidence": 0.864,
+      "needsHumanReview": true,
+      "sourceRoutes": [
+        "DELETE /api/wishlist/:productId",
+        "GET /api/wishlist",
+        "POST /api/wishlist/add",
+        "POST /api/wishlist/share"
       ],
       "status": "draft"
     }
