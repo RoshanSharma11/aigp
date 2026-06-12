@@ -46,10 +46,57 @@ export {
 export {
   parseAnalyzeCommandOptions,
   runAnalyzeCommand,
+  runStaticAnalysisWithArtifacts,
+  type AnalyzeCommandHooks,
   type AnalyzeCommandOptions,
   type AnalyzeCommandResult,
 } from "./cli/analyze.js";
 export { runCliAsync } from "./cli/index.js";
+export {
+  createEcommerceFixtureMockProvider,
+  ECOMMERCE_DOMAIN_CLASSIFICATION,
+  buildEcommerceMockGroupingResponse,
+  buildEcommerceMockGroupingRoutes,
+} from "./analyze/ecommerce-fixture-mock.js";
+export {
+  runFullAnalysis,
+  runStaticAnalysisWithArtifacts as runStaticAnalysisArtifacts,
+  type FullAnalysisResult,
+  type RunFullAnalysisOptions,
+} from "./analyze/pipeline.js";
+export {
+  CAPABILITY_COUNT_RATIO_GATE,
+  CAPABILITY_HINT_ALIASES,
+  CAPABILITY_PRECISION_GATE,
+  evaluateCapabilityPrecision,
+  formatCapabilityEvalReport,
+  loadGroundTruth,
+  normalizeCapabilityHint,
+  resolveGroundTruthPath,
+  type CapabilityEvalReport,
+  type GroundTruthDocument,
+  type GroundTruthRoute,
+} from "./eval/precision.js";
+export {
+  AGENT_LAYER_DIRECTORY,
+  ANALYSIS_META_ARTIFACT_VERSION,
+  ANALYSIS_META_FILE,
+  CAPABILITIES_ARTIFACT_VERSION,
+  CAPABILITIES_DRAFT_FILE,
+  ensureAgentLayerDirectory,
+  PENDING_REVIEW_FILE,
+  resolveAgentLayerDirectory,
+  ROUTE_GRAPH_FILE,
+  serializeAnalysisMetaArtifact,
+  serializeCapabilitiesDraft,
+  writeAnalysisArtifacts,
+  writeAnalysisMetaArtifact,
+  writeCapabilitiesDraft,
+  writePendingReviewArtifact,
+  type AnalysisArtifacts,
+  type AnalysisMetaArtifact,
+  type WriteAnalysisArtifactsResult,
+} from "./store/writer.js";
 export {
   DEFAULT_LLM_MAX_RETRIES,
   DEFAULT_LLM_RETRY_BACKOFF_MS,
