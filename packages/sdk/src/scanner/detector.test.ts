@@ -95,7 +95,7 @@ describe("framework detector", () => {
 });
 
 describe("nestjs framework adapter", () => {
-  it("should expose unimplemented extraction methods for later phases", () => {
+  it("should return an empty route list when no controller files are present", () => {
     const emptyContext = {
       rootPath: fixtureRoot,
       framework: "nestjs" as const,
@@ -105,8 +105,6 @@ describe("nestjs framework adapter", () => {
       fileGraph: { nodes: [] },
     };
 
-    expect(() => nestJsFrameworkAdapter.extractRoutes(emptyContext)).toThrow(
-      "extractRoutes is not implemented yet",
-    );
+    expect(nestJsFrameworkAdapter.extractRoutes(emptyContext)).toEqual([]);
   });
 });

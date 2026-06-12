@@ -1,3 +1,5 @@
+import { runAnalyzeCommand } from "./analyze.js";
+
 const HELP_TEXT = `agent-layer <command> [options] [path]
 
 Commands: analyze, validate, diff, serve-mcp, doctor, review
@@ -25,6 +27,39 @@ export const runCli = (argv: readonly string[]): string => {
   return `Unknown command: ${argv[0]}\n\n${formatHelpText()}`;
 };
 
+export const runCliAsync = async (
+  argv: readonly string[],
+): Promise<{ readonly exitCode: number; readonly stdout: string; readonly stderr: string }> => {
+  if (argv.includes("--help") || argv.includes("-h") || argv.length === 0) {
+    return {
+      exitCode: 0,
+      stdout: `${formatHelpText()}\n`,
+      stderr: "",
+    };
+  }
+
+  const [command, ...commandArgs] = argv;
+
+  if (command === "analyze") {
+    const result = await runAnalyzeCommand(commandArgs);
+    return {
+      exitCode: result.exitCode,
+      stdout: result.stdout,
+      stderr: result.stderr,
+    };
+  }
+
+  return {
+    exitCode: 1,
+    stdout: "",
+    stderr: `${runCli(argv)}\n`,
+  };
+};
+
 if (isCliEntrypoint(process.argv[1])) {
-  process.stdout.write(`${runCli(process.argv.slice(2))}\n`);
+  void runCliAsync(process.argv.slice(2)).then((result) => {
+    process.stdout.write(result.stdout);
+    process.stderr.write(result.stderr);
+    process.exitCode = result.exitCode;
+  });
 }

@@ -28,3 +28,25 @@ export {
   resolveTsConfig,
   type TsConfigResolution,
 } from "./scanner/tsconfig.js";
+export {
+  extractNestJsRoutes,
+  extractNestJsMiddleware,
+} from "./analyzer/tree-sitter/nestjs.js";
+export { extractNestJsRouteTypes } from "./analyzer/types/nestjs.js";
+export { extractNestJsCallGraph } from "./analyzer/call-graph/nestjs.js";
+export {
+  buildRouteGraph,
+  computeRouteRecall,
+  runStaticAnalysis,
+  serializeRouteGraphArtifact,
+  writeRouteGraphArtifact,
+  type BuildRouteGraphResult,
+  type RouteGraphArtifact,
+} from "./analyzer/route-graph.js";
+export {
+  parseAnalyzeCommandOptions,
+  runAnalyzeCommand,
+  type AnalyzeCommandOptions,
+  type AnalyzeCommandResult,
+} from "./cli/analyze.js";
+export { runCliAsync } from "./cli/index.js";

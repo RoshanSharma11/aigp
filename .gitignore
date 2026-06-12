@@ -4,3 +4,8 @@ coverage
 *.tsbuildinfo
 .agent-layer/capabilities.draft.json
 .agent-layer/pending-review.json
+.DS_Store
+
+.vscode
+graphify-out/
+.pnpm-store/

@@ -27,6 +27,18 @@ export interface TypeInfo {
   readonly isArray: boolean;
 }
 
+export interface RouteTypeInfo {
+  readonly request?: TypeInfo;
+  readonly response?: TypeInfo;
+  readonly databaseEntities: readonly string[];
+}
+
+export interface RouteCallGraphInfo {
+  readonly callChain: readonly CallGraphNode[];
+  readonly databaseEntities: readonly string[];
+  readonly sourceCode: string;
+}
+
 export interface RawRoute {
   readonly id: string;
   readonly framework: "nestjs";

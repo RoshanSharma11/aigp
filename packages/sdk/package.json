@@ -21,6 +21,7 @@
     "lint": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@agent-layer/core": "workspace:*"
+    "@agent-layer/core": "workspace:*",
+    "ts-morph": "^26.0.0"
   }
 }

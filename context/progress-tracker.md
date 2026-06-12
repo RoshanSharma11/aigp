@@ -32,25 +32,25 @@ When **blocked**:
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 1 — Static Analysis |
+| **Current phase** | Phase 2 — Capability Generation |
 | **Current feature** | None started |
-| **MVP progress** | 32% (7/22 MVP features: Phases 0–3 + 4.1) |
-| **Last milestone** | Feature 1.2 complete — project scanner lists controller files in fixture |
-| **Next milestone** | Feature 1.3 complete — NestJS route extraction from fixture controllers |
+| **MVP progress** | 50% (11/22 MVP features: Phases 0–3 + 4.1) |
+| **Last milestone** | Phase 1 complete — `analyze --static-only` produces RouteGraph at 100% fixture recall |
+| **Next milestone** | Feature 2.1 complete — LLM client abstraction |
 
 ---
 
 ## Current Focus
 
-**Nothing in progress.** Ready to begin **Phase 1 — Feature 1.3 (NestJS route extraction)**.
+**Nothing in progress.** Phase 1 gate G1 passed. Ready to begin **Phase 2 — Feature 2.1 (LLM client abstraction)**.
 
 ---
 
 ## Next Up
 
-1. **Feature 1.3** — NestJS route extraction (Layer A)
-2. **Feature 1.4** — Type extraction (Layer B)
-3. **Feature 1.5** — Call graph (Layer C)
+1. **Feature 2.1** — LLM client abstraction
+2. **Feature 2.2** — Reasoner Stage 1: Domain classification
+3. **Feature 2.3** — Reasoner Stage 2: Intent labeling
 
 ---
 
@@ -92,10 +92,10 @@ When **blocked**:
 |---|---|---|---|---|
 | 1.1 | Framework adapter interface | done | 2026-06-12 | `FrameworkAdapter` interface, registry, NestJS detection via `@nestjs/core` in package.json |
 | 1.2 | Project scanner | done | 2026-06-12 | Walks source tree, classifies controllers/DTOs/entities, builds import graph, resolves tsconfig |
-| 1.3 | NestJS route extraction (Layer A) | not_started | — | |
-| 1.4 | Type extraction (Layer B) | not_started | — | |
-| 1.5 | Call graph (Layer C) | not_started | — | |
-| 1.6 | RouteGraph builder | not_started | — | |
+| 1.3 | NestJS route extraction (Layer A) | done | 2026-06-12 | ts-morph decorator AST for routes/middleware; global prefix from `main.ts`; 7/7 fixture routes at 100% recall |
+| 1.4 | Type extraction (Layer B) | done | 2026-06-12 | ts-morph resolves `@Body`/`@Query`/`@Param`; class-validator → JSON Schema; entity response schemas |
+| 1.5 | Call graph (Layer C) | done | 2026-06-12 | Traces `this.*Service.*()` ≤3 hops; detects entity touches; includes handler `sourceCode` snippet |
+| 1.6 | RouteGraph builder | done | 2026-06-12 | Merges Layers A+B+C; writes `.agent-layer/route-graph.json`; `analyze --static-only` CLI; 100% fixture recall (G1) |
 
 ---
 
@@ -190,6 +190,12 @@ When **blocked**:
 
 | Date | Feature | Decision | Rationale |
 |---|---|---|---|
+| 2026-06-12 | 1.6 | Gate full `analyze` behind `--static-only` until Phase 2 LLM pipeline ships | Phase 1 exit is static RouteGraph only; avoids implying capabilities are generated |
+| 2026-06-12 | 1.6 | Write debug artifact as versioned `.agent-layer/route-graph.json` wrapper | Keeps RouteGraph serializable without committing a schema file yet |
+| 2026-06-12 | 1.5 | Add `RouteCallGraphInfo` and `extractCallGraph` on `FrameworkAdapter` | Keeps call graph separate from type extraction; RouteGraph builder (1.6) merges all layers |
+| 2026-06-12 | 1.5 | Load all `fileGraph.nodes` into ts-morph project for call tracing | Service/repository files are not in `routeFiles`; import graph provides analysis scope |
+| 2026-06-12 | 1.3 | Use ts-morph decorator AST for Layer A route extraction instead of tree-sitter | tree-sitter native builds blocked in CI; ts-morph gives equivalent decorator access for TypeScript |
+| 2026-06-12 | 1.4 | Extend `extractTypes` to return `RouteTypeInfo` with separate request/response schemas | Single `TypeInfo` insufficient for RouteGraph; backward-compatible adapter change (only NestJS stub existed) |
 | 2026-06-12 | 1.2 | Use regex-based import/export extraction for file graph in Phase 1 | Sufficient for dependency graph now; ts-morph reserved for Feature 1.4 type extraction |
 | 2026-06-12 | 1.2 | Store ScanContext file paths relative to project root with POSIX separators | Keeps artifacts serializable and portable across platforms |
 | 2026-06-12 | 1.1 | Detect framework by checking `dependencies`, `devDependencies`, and `peerDependencies` for `@nestjs/core` | Matches NestJS app layouts without executing user code |
@@ -217,6 +223,9 @@ When **blocked**:
 
 ## Notes
 
+- **Phase 1 static analysis is complete (G1 passed).** `agent-layer analyze --static-only` on the fixture yields 7/7 routes (100% recall), writes `.agent-layer/route-graph.json`, and reports warnings on stderr.
+- **Call graph extraction is in place.** Cart routes trace `handler → CartService.*` with `CartEntity` in `databaseEntities`; handler `sourceCode` captured for LLM context.
+- **Route and type extraction are in place.** `nestJsFrameworkAdapter.extractRoutes()` returns all 7 fixture routes with correct method/path/middleware; `extractTypes()` produces JSON Schema for DTOs and entities (validated on `POST /api/cart/items`).
 - **Project scanner is in place.** `scanProject()` returns a typed `ScanContext` with controller/DTO/entity file lists and an import dependency graph for the fixture app.
 - **Phase 0 foundation is now in place.** Root build/test tooling passes, and the shared type/schema layer is ready for subsequent features.
 - **Fixture baseline is established.** `fixtures/nestjs-ecommerce` now provides products, cart, and auth routes plus `ground-truth.json` for upcoming static-analysis accuracy checks.
@@ -238,4 +247,4 @@ When **blocked**:
 
 ---
 
-**Last updated:** 2026-06-12 — Feature 1.2 completed. Project scanner walks source files, classifies NestJS artifacts, and builds import graph.
+**Last updated:** 2026-06-12 — Feature 1.6 completed. Phase 1 exit: RouteGraph builder + `analyze --static-only` CLI with 100% fixture route recall.
