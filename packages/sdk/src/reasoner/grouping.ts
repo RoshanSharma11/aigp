@@ -333,26 +333,49 @@ export interface GroupCapabilitiesOptions {
   readonly temperature?: number | undefined;
 }
 
+const GROUPING_COVERAGE_MAX_RETRIES = 2;
+
 export const groupCapabilitiesWithLlm = async (
   input: CapabilityGroupingInput,
   client: LlmClient,
   options: GroupCapabilitiesOptions = {},
 ): Promise<readonly CapabilityGroup[]> => {
-  const response = await client.completeJson({
-    system: buildCapabilityGroupingSystemPrompt(),
-    user: buildCapabilityGroupingUserPrompt(input),
-    schema: groupingResponseSchema,
-    ...(options.temperature !== undefined
-      ? { temperature: options.temperature }
-      : {}),
-  });
+  const maxAttempts = GROUPING_COVERAGE_MAX_RETRIES + 1;
+  let lastError: unknown;
 
-  assertGroupingCoverage(
-    input.routes.map((route) => route.routeId),
-    response.groups,
-  );
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    try {
+      const response = await client.completeJson({
+        system: buildCapabilityGroupingSystemPrompt(),
+        user: buildCapabilityGroupingUserPrompt(input),
+        schema: groupingResponseSchema,
+        ...(options.temperature !== undefined
+          ? { temperature: options.temperature }
+          : {}),
+      });
 
-  return detectWorkflowPrerequisites(response.groups, input.routes);
+      assertGroupingCoverage(
+        input.routes.map((route) => route.routeId),
+        response.groups,
+      );
+
+      return detectWorkflowPrerequisites(response.groups, input.routes);
+    } catch (error) {
+      lastError = error;
+
+      const isCoverageError =
+        error instanceof LlmError &&
+        error.code === "LLM_SCHEMA_VALIDATION_FAILED" &&
+        error.message.includes("Capability grouping response missing routeId");
+
+      const canRetry = attempt < maxAttempts - 1 && isCoverageError;
+      if (!canRetry) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError;
 };
 
 export const groupRouteCapabilities = async (

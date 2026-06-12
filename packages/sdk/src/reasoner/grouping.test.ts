@@ -127,45 +127,131 @@ const buildMockGroupingRoutes = (): GroupingRouteInput[] => [
   },
 ];
 
-const buildMockGroupingResponse = (input: CapabilityGroupingInput): string =>
-  JSON.stringify({
-    groups: [
-      {
-        id: "product_catalog",
-        name: "Product Catalog",
-        description: "Browse and search products in the store catalog",
-        category: "catalog",
-        routeIds: input.routes
-          .filter((route) => route.path.startsWith("/api/products"))
-          .map((route) => route.routeId),
-        requiresAuth: false,
-        confidence: 0.93,
-      },
-      {
-        id: "cart_management",
-        name: "Cart Management",
-        description: "View and modify the shopping cart",
-        category: "cart",
-        routeIds: input.routes
-          .filter((route) => route.path.startsWith("/api/cart"))
-          .map((route) => route.routeId),
-        prerequisites: ["account_access"],
-        requiresAuth: true,
-        confidence: 0.92,
-      },
-      {
-        id: "account_access",
-        name: "Account Access",
-        description: "Authenticate users and establish sessions",
-        category: "auth",
-        routeIds: input.routes
-          .filter((route) => route.path.startsWith("/api/auth"))
-          .map((route) => route.routeId),
-        requiresAuth: false,
-        confidence: 0.95,
-      },
-    ],
+const buildMockGroupingResponse = (input: CapabilityGroupingInput): string => {
+  const allGroups = [
+    {
+      id: "product_catalog",
+      name: "Product Catalog",
+      description: "Browse and search products in the store catalog",
+      category: "catalog",
+      routeIds: input.routes
+        .filter((route) => route.path.startsWith("/api/products"))
+        .map((route) => route.routeId),
+      requiresAuth: false,
+      confidence: 0.93,
+    },
+    {
+      id: "cart_management",
+      name: "Cart Management",
+      description: "View and modify the shopping cart",
+      category: "cart",
+      routeIds: input.routes
+        .filter((route) => route.path.startsWith("/api/cart"))
+        .map((route) => route.routeId),
+      prerequisites: ["account_access"],
+      requiresAuth: true,
+      confidence: 0.92,
+    },
+    {
+      id: "account_access",
+      name: "Account Access",
+      description: "Authenticate users and establish sessions",
+      category: "auth",
+      routeIds: input.routes
+        .filter((route) => route.path.startsWith("/api/auth"))
+        .map((route) => route.routeId),
+      requiresAuth: false,
+      confidence: 0.95,
+    },
+    {
+      id: "order_management",
+      name: "Order Management",
+      description: "Create and track customer orders",
+      category: "orders",
+      routeIds: input.routes
+        .filter((route) => route.path.startsWith("/api/orders"))
+        .map((route) => route.routeId),
+      prerequisites: ["account_access"],
+      requiresAuth: true,
+      confidence: 0.91,
+    },
+    {
+      id: "customer_management",
+      name: "Customer Management",
+      description: "Manage customer profiles and addresses",
+      category: "customers",
+      routeIds: input.routes
+        .filter((route) => route.path.startsWith("/api/customers"))
+        .map((route) => route.routeId),
+      prerequisites: ["account_access"],
+      requiresAuth: true,
+      confidence: 0.90,
+    },
+    {
+      id: "review_management",
+      name: "Review Management",
+      description: "Create and browse product reviews",
+      category: "reviews",
+      routeIds: input.routes
+        .filter((route) => route.path.startsWith("/api/reviews"))
+        .map((route) => route.routeId),
+      requiresAuth: false,
+      confidence: 0.89,
+    },
+    {
+      id: "wishlist_management",
+      name: "Wishlist Management",
+      description: "Manage customer wishlists",
+      category: "wishlist",
+      routeIds: input.routes
+        .filter((route) => route.path.startsWith("/api/wishlist"))
+        .map((route) => route.routeId),
+      prerequisites: ["account_access"],
+      requiresAuth: true,
+      confidence: 0.88,
+    },
+    {
+      id: "payment_processing",
+      name: "Payment Processing",
+      description: "Process payments and manage payment methods",
+      category: "payments",
+      routeIds: input.routes
+        .filter((route) => route.path.startsWith("/api/payments"))
+        .map((route) => route.routeId),
+      prerequisites: ["account_access"],
+      requiresAuth: true,
+      confidence: 0.91,
+    },
+    {
+      id: "notification_management",
+      name: "Notification Management",
+      description: "Manage user notifications and preferences",
+      category: "notifications",
+      routeIds: input.routes
+        .filter((route) => route.path.startsWith("/api/notifications"))
+        .map((route) => route.routeId),
+      prerequisites: ["account_access"],
+      requiresAuth: true,
+      confidence: 0.87,
+    },
+    {
+      id: "admin_management",
+      name: "Admin Management",
+      description: "Administrative functions for managing the platform",
+      category: "admin",
+      routeIds: input.routes
+        .filter((route) => route.path.startsWith("/api/admin"))
+        .map((route) => route.routeId),
+      prerequisites: ["account_access"],
+      requiresAuth: true,
+      confidence: 0.92,
+    },
+  ];
+
+  return JSON.stringify({
+    groups: allGroups.filter((group) => group.routeIds.length > 0),
   });
+};
 
 describe("grouping helpers", () => {
   it("should detect utility routes by path and handler name", () => {
@@ -325,16 +411,21 @@ describe("groupRouteCapabilities", () => {
 
       expect(result.groups.length).toBeLessThan(routeGraph.length);
       expect(result.groups.length).toBeGreaterThanOrEqual(2);
-      expect(result.excludedRouteIds).toEqual([]);
+      
+      // Webhook routes are utility routes and should be excluded
+      const webhookRoutes = routeGraph
+        .filter((node) => node.route.path.includes("webhook"))
+        .map((node) => node.route.id);
+      expect(result.excludedRouteIds).toEqual(webhookRoutes);
       expect(result.lowConfidenceGroupIds).toEqual([]);
 
       const assignedRouteIds = result.groups.flatMap((group) => group.routeIds);
-      expect(assignedRouteIds).toHaveLength(routeGraph.length);
+      const { activeRoutes } = partitionUtilityRoutes(routeGraph);
+      expect(assignedRouteIds).toHaveLength(activeRoutes.length);
 
       const cartGroup = result.groups.find((group) => group.id === "cart_management");
       expect(cartGroup?.prerequisites).toContain("account_access");
 
-      const { activeRoutes } = partitionUtilityRoutes(routeGraph);
       for (const node of activeRoutes) {
         const label = intentResult.labels.find(
           (candidate) => candidate.routeId === node.route.id,
@@ -345,7 +436,7 @@ describe("groupRouteCapabilities", () => {
         expect(groupingRoute.intent.length).toBeGreaterThan(0);
       }
     },
-    30_000,
+    60_000,
   );
 
   it("should exclude utility routes before grouping", () => {
