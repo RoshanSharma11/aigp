@@ -34,23 +34,23 @@ When **blocked**:
 |---|---|
 | **Current phase** | Phase 2 — Capability Generation |
 | **Current feature** | None started |
-| **MVP progress** | 64% (14/22 MVP features: Phases 0–3 + 4.1) |
-| **Last milestone** | Feature 2.3 complete — Reasoner Stage 2: Intent labeling |
-| **Next milestone** | Feature 2.4 complete — Reasoner Stage 3: Capability grouping |
+| **MVP progress** | 73% (16/22 MVP features: Phases 0–3 + 4.1) |
+| **Last milestone** | Feature 2.5 complete — Reasoner Stage 4: Self-refine |
+| **Next milestone** | Feature 2.6 complete — Capability builder |
 
 ---
 
 ## Current Focus
 
-**Nothing in progress.** Feature 2.3 complete. Ready to begin **Feature 2.4 — Reasoner Stage 3: Capability grouping**.
+**Nothing in progress.** Features 2.4 and 2.5 complete. Ready to begin **Feature 2.6 — Capability builder**.
 
 ---
 
 ## Next Up
 
-1. **Feature 2.4** — Reasoner Stage 3: Capability grouping
-2. **Feature 2.5** — Reasoner Stage 4: Self-refine
-3. **Feature 2.6** — Capability builder
+1. **Feature 2.6** — Capability builder
+2. **Feature 2.7** — Capability store (write path)
+3. **Feature 2.8** — Accuracy evaluation
 
 ---
 
@@ -109,8 +109,8 @@ When **blocked**:
 | 2.1 | LLM client abstraction | done | 2026-06-12 | `LlmClient` + mock/OpenAI/Anthropic providers; Zod JSON validation; retry/timeout; usage/cost tracking |
 | 2.2 | Reasoner Stage 1: Domain classification | done | 2026-06-12 | Versioned `domain.v1` prompt; `classifyDomain` + RouteGraph input builders; fixture classified as `ecommerce` |
 | 2.3 | Reasoner Stage 2: Intent labeling | done | 2026-06-12 | Versioned `intent.v1` prompt; batched labeling (8 routes/call); low-confidence flagging at 0.80 |
-| 2.4 | Reasoner Stage 3: Capability grouping | not_started | — | Hardest feature |
-| 2.5 | Reasoner Stage 4: Self-refine | not_started | — | |
+| 2.4 | Reasoner Stage 3: Capability grouping | done | 2026-06-12 | Entity-centric pre-clusters + LLM merge; utility route exclusion; workflow prerequisites |
+| 2.5 | Reasoner Stage 4: Self-refine | done | 2026-06-12 | Consistency checks; confidence adjustment; pending-review artifact builder |
 | 2.6 | Capability builder | not_started | — | |
 | 2.7 | Capability store (write path) | not_started | — | |
 | 2.8 | Accuracy evaluation | not_started | — | |
@@ -190,7 +190,13 @@ When **blocked**:
 
 | Date | Feature | Decision | Rationale |
 |---|---|---|---|
-| 2026-06-12 | 2.3 | Default batch size 8 routes per intent LLM call (`DEFAULT_INTENT_BATCH_SIZE`) | Within 5–10 range from build plan; fixture fits in one call |
+| 2026-06-12 | 2.5 | Skip LLM refine call when no consistency issues detected | Rules-only path is sufficient for clean groupings; LLM invoked only when issues exist |
+| 2026-06-12 | 2.5 | `pending-review.json` structure built in refine stage; disk write deferred to 2.7 | Separates artifact construction from store I/O per module boundaries |
+| 2026-06-12 | 2.5 | Confidence penalty 0.10 per consistency issue on a capability | Simple deterministic adjustment before pending-review flagging |
+| 2026-06-12 | 2.4 | Entity-centric pre-clusters seed LLM grouping from primary DB entity per route | Gives LLM stable hints without forcing 1:1 route mapping |
+| 2026-06-12 | 2.4 | Utility routes excluded by path/handler patterns before grouping | Health/metrics/webhooks are not business capabilities |
+| 2026-06-12 | 2.4 | Workflow prerequisites injected post-LLM for auth-required groups | Cart/checkout capabilities depend on login when auth capability exists |
+| 2026-06-12 | 2.4 | Low-confidence threshold 0.85 for capability groups | Matches architecture Stage 3 gate; separate from route intent 0.80 |
 | 2026-06-12 | 2.3 | Low-confidence threshold 0.80 for route intent labels | Matches architecture Stage 2 gate; separate from capability 0.85 threshold |
 | 2026-06-12 | 2.3 | Post-LLM batch coverage check ensures every input `routeId` has a label | Triggers retry via `LlmError`; prevents partial batch responses |
 | 2026-06-12 | 2.2 | Route prefixes = first two URL path segments (e.g. `/api/products`) | Stable grouping signal without overfitting to individual route paths |
@@ -230,6 +236,8 @@ When **blocked**:
 
 ## Notes
 
+- **Capability refine is in place.** `refineCapabilityGroups()` runs duplicate/orphan/auth/low-confidence checks, adjusts confidence, builds `PendingReviewArtifact`, and calls versioned `refine.v1` LLM only when issues exist.
+- **Capability grouping is in place.** `groupRouteCapabilities()` builds entity-centric pre-clusters, excludes utility routes, calls versioned `grouping.v1` LLM, validates full route coverage, and detects workflow prerequisites.
 - **Intent labeling is in place.** `labelRouteIntents()` batches RouteGraph nodes (8/call), calls versioned `intent.v1` prompt, validates per-route labels, and flags routes with confidence < 0.80.
 - **Domain classification is in place.** `classifyDomainFromRouteGraph()` builds input from entity names + route prefixes + package name, calls versioned `domain.v1` prompt via `LlmClient`, and validates structured output.
 - **LLM client abstraction is in place.** `createLlmClient(config)` returns a provider-backed client with structured JSON validation, 2× retry + exponential backoff, 60s timeout, and cumulative usage/cost tracking via `getUsage()`.
@@ -256,4 +264,4 @@ When **blocked**:
 
 ---
 
-**Last updated:** 2026-06-12 — Feature 2.3 completed. Reasoner Stage 2 intent labeling with batched prompts, per-route metadata, and low-confidence flagging.
+**Last updated:** 2026-06-12 — Features 2.4 and 2.5 completed. Capability grouping with entity pre-clusters + LLM merge; self-refine with consistency checks and pending-review artifact builder.

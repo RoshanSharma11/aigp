@@ -51,7 +51,7 @@ describe("domain classification input builders", () => {
       extractEntityNames([
         { databaseEntities: ["ProductEntity", "CartEntity"] },
         { databaseEntities: ["CartEntity", "SessionEntity"] },
-      ] as Parameters<typeof extractEntityNames>[0]),
+      ] as unknown as Parameters<typeof extractEntityNames>[0]),
     ).toEqual(["CartEntity", "ProductEntity", "SessionEntity"]);
   });
 });
