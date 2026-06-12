@@ -34,23 +34,23 @@ When **blocked**:
 |---|---|
 | **Current phase** | Phase 2 — Capability Generation |
 | **Current feature** | None started |
-| **MVP progress** | 59% (13/22 MVP features: Phases 0–3 + 4.1) |
-| **Last milestone** | Feature 2.2 complete — Reasoner Stage 1: Domain classification |
-| **Next milestone** | Feature 2.3 complete — Reasoner Stage 2: Intent labeling |
+| **MVP progress** | 64% (14/22 MVP features: Phases 0–3 + 4.1) |
+| **Last milestone** | Feature 2.3 complete — Reasoner Stage 2: Intent labeling |
+| **Next milestone** | Feature 2.4 complete — Reasoner Stage 3: Capability grouping |
 
 ---
 
 ## Current Focus
 
-**Nothing in progress.** Feature 2.2 complete. Ready to begin **Feature 2.3 — Reasoner Stage 2: Intent labeling**.
+**Nothing in progress.** Feature 2.3 complete. Ready to begin **Feature 2.4 — Reasoner Stage 3: Capability grouping**.
 
 ---
 
 ## Next Up
 
-1. **Feature 2.3** — Reasoner Stage 2: Intent labeling
-2. **Feature 2.4** — Reasoner Stage 3: Capability grouping
-3. **Feature 2.5** — Reasoner Stage 4: Self-refine
+1. **Feature 2.4** — Reasoner Stage 3: Capability grouping
+2. **Feature 2.5** — Reasoner Stage 4: Self-refine
+3. **Feature 2.6** — Capability builder
 
 ---
 
@@ -108,7 +108,7 @@ When **blocked**:
 |---|---|---|---|---|
 | 2.1 | LLM client abstraction | done | 2026-06-12 | `LlmClient` + mock/OpenAI/Anthropic providers; Zod JSON validation; retry/timeout; usage/cost tracking |
 | 2.2 | Reasoner Stage 1: Domain classification | done | 2026-06-12 | Versioned `domain.v1` prompt; `classifyDomain` + RouteGraph input builders; fixture classified as `ecommerce` |
-| 2.3 | Reasoner Stage 2: Intent labeling | not_started | — | |
+| 2.3 | Reasoner Stage 2: Intent labeling | done | 2026-06-12 | Versioned `intent.v1` prompt; batched labeling (8 routes/call); low-confidence flagging at 0.80 |
 | 2.4 | Reasoner Stage 3: Capability grouping | not_started | — | Hardest feature |
 | 2.5 | Reasoner Stage 4: Self-refine | not_started | — | |
 | 2.6 | Capability builder | not_started | — | |
@@ -190,6 +190,9 @@ When **blocked**:
 
 | Date | Feature | Decision | Rationale |
 |---|---|---|---|
+| 2026-06-12 | 2.3 | Default batch size 8 routes per intent LLM call (`DEFAULT_INTENT_BATCH_SIZE`) | Within 5–10 range from build plan; fixture fits in one call |
+| 2026-06-12 | 2.3 | Low-confidence threshold 0.80 for route intent labels | Matches architecture Stage 2 gate; separate from capability 0.85 threshold |
+| 2026-06-12 | 2.3 | Post-LLM batch coverage check ensures every input `routeId` has a label | Triggers retry via `LlmError`; prevents partial batch responses |
 | 2026-06-12 | 2.2 | Route prefixes = first two URL path segments (e.g. `/api/products`) | Stable grouping signal without overfitting to individual route paths |
 | 2026-06-12 | 2.2 | Domain types live in `reasoner/prompts/domain.v1.ts` co-located with prompt | Keeps versioned prompt + Zod schema together per code-standards |
 | 2026-06-12 | 2.1 | Use native `fetch` for OpenAI/Anthropic (no provider SDK deps) | Matches code-standards; keeps SDK thin; injectable `fetchImpl` for tests |
@@ -227,6 +230,7 @@ When **blocked**:
 
 ## Notes
 
+- **Intent labeling is in place.** `labelRouteIntents()` batches RouteGraph nodes (8/call), calls versioned `intent.v1` prompt, validates per-route labels, and flags routes with confidence < 0.80.
 - **Domain classification is in place.** `classifyDomainFromRouteGraph()` builds input from entity names + route prefixes + package name, calls versioned `domain.v1` prompt via `LlmClient`, and validates structured output.
 - **LLM client abstraction is in place.** `createLlmClient(config)` returns a provider-backed client with structured JSON validation, 2× retry + exponential backoff, 60s timeout, and cumulative usage/cost tracking via `getUsage()`.
 - **Call graph extraction is in place.** Cart routes trace `handler → CartService.*` with `CartEntity` in `databaseEntities`; handler `sourceCode` captured for LLM context.
@@ -252,4 +256,4 @@ When **blocked**:
 
 ---
 
-**Last updated:** 2026-06-12 — Feature 2.2 completed. Reasoner Stage 1 domain classification with versioned prompt, RouteGraph input builders, and fixture ecommerce classification test.
+**Last updated:** 2026-06-12 — Feature 2.3 completed. Reasoner Stage 2 intent labeling with batched prompts, per-route metadata, and low-confidence flagging.

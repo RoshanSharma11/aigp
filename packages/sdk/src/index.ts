@@ -106,3 +106,30 @@ export {
   type DomainClassificationInput,
   type DomainClassificationResult,
 } from "./reasoner/prompts/domain.v1.js";
+export {
+  annotateLowConfidenceLabels,
+  batchRoutesForIntentLabeling,
+  buildIntentLabelingRouteInput,
+  INTENT_LABELING_STAGE,
+  labelIntentBatch,
+  labelRouteIntents,
+  truncateSourceCodeSnippet,
+  type LabelIntentBatchOptions,
+  type LabelRouteIntentsOptions,
+} from "./reasoner/intent.js";
+export {
+  buildIntentLabelingSystemPrompt,
+  buildIntentLabelingUserPrompt,
+  DEFAULT_INTENT_BATCH_SIZE,
+  INTENT_LOW_CONFIDENCE_THRESHOLD,
+  INTENT_PROMPT_VERSION,
+  intentBatchResponseSchema,
+  MAX_SOURCE_CODE_SNIPPET_LENGTH,
+  routeIntentLabelSchema,
+  type IntentBatchResponse,
+  type IntentLabelingBatchInput,
+  type IntentLabelingResult,
+  type IntentLabelingRouteInput,
+  type RouteIntentLabel,
+  type RouteIntentLabelResult,
+} from "./reasoner/prompts/intent.v1.js";
