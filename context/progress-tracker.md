@@ -34,23 +34,22 @@ When **blocked**:
 |---|---|
 | **Current phase** | Phase 2 — Capability Generation |
 | **Current feature** | None started |
-| **MVP progress** | 73% (16/22 MVP features: Phases 0–3 + 4.1) |
-| **Last milestone** | Feature 2.5 complete — Reasoner Stage 4: Self-refine |
-| **Next milestone** | Feature 2.6 complete — Capability builder |
+| **MVP progress** | 77% (17/22 MVP features: Phases 0–3 + 4.1) |
+| **Last milestone** | Feature 2.6 complete — Capability builder |
+| **Next milestone** | Feature 2.7 complete — Capability store (write path) |
 
 ---
 
 ## Current Focus
 
-**Nothing in progress.** Features 2.4 and 2.5 complete. Ready to begin **Feature 2.6 — Capability builder**.
+**Nothing in progress.** Feature 2.6 complete. Ready to begin **Feature 2.7 — Capability store (write path)**.
 
 ---
 
 ## Next Up
 
-1. **Feature 2.6** — Capability builder
-2. **Feature 2.7** — Capability store (write path)
-3. **Feature 2.8** — Accuracy evaluation
+1. **Feature 2.7** — Capability store (write path)
+2. **Feature 2.8** — Accuracy evaluation
 
 ---
 
@@ -111,7 +110,7 @@ When **blocked**:
 | 2.3 | Reasoner Stage 2: Intent labeling | done | 2026-06-12 | Versioned `intent.v1` prompt; batched labeling (8 routes/call); low-confidence flagging at 0.80 |
 | 2.4 | Reasoner Stage 3: Capability grouping | done | 2026-06-12 | Entity-centric pre-clusters + LLM merge; utility route exclusion; workflow prerequisites |
 | 2.5 | Reasoner Stage 4: Self-refine | done | 2026-06-12 | Consistency checks; confidence adjustment; pending-review artifact builder |
-| 2.6 | Capability builder | not_started | — | |
+| 2.6 | Capability builder | done | 2026-06-12 | Merges RouteGraph + refined groups → `Capability[]`; weighted confidence scoring; schema-valid draft capabilities |
 | 2.7 | Capability store (write path) | not_started | — | |
 | 2.8 | Accuracy evaluation | not_started | — | |
 
@@ -190,7 +189,10 @@ When **blocked**:
 
 | Date | Feature | Decision | Rationale |
 |---|---|---|---|
-| 2026-06-12 | 2.5 | Skip LLM refine call when no consistency issues detected | Rules-only path is sufficient for clean groupings; LLM invoked only when issues exist |
+| 2026-06-12 | 2.6 | Capability confidence = weighted average (route 0.20, schema 0.25, intent 0.30, grouping 0.25) | Matches architecture §4; deterministic scoring from static + semantic signals |
+| 2026-06-12 | 2.6 | Default operation = first read operation (alphabetical among reads) | Stable, predictable default for multi-operation capabilities |
+| 2026-06-12 | 2.6 | Mixed read/write side effects → capability `sideEffects: "transactional"` | Distinguishes multi-effect capabilities from single-effect groups |
+| 2026-06-12 | 2.6 | `needsHumanReview` when confidence < 0.85, risk high, or pending-review entry | Aligns with architecture human-review gate |
 | 2026-06-12 | 2.5 | `pending-review.json` structure built in refine stage; disk write deferred to 2.7 | Separates artifact construction from store I/O per module boundaries |
 | 2026-06-12 | 2.5 | Confidence penalty 0.10 per consistency issue on a capability | Simple deterministic adjustment before pending-review flagging |
 | 2026-06-12 | 2.4 | Entity-centric pre-clusters seed LLM grouping from primary DB entity per route | Gives LLM stable hints without forcing 1:1 route mapping |
@@ -236,6 +238,7 @@ When **blocked**:
 
 ## Notes
 
+- **Capability builder is in place.** `buildCapabilities()` merges RouteGraph + intent labels + refined groups into schema-valid `Capability[]` with weighted confidence, draft status, and workflow metadata (`prerequisites`, `followedBy`).
 - **Capability refine is in place.** `refineCapabilityGroups()` runs duplicate/orphan/auth/low-confidence checks, adjusts confidence, builds `PendingReviewArtifact`, and calls versioned `refine.v1` LLM only when issues exist.
 - **Capability grouping is in place.** `groupRouteCapabilities()` builds entity-centric pre-clusters, excludes utility routes, calls versioned `grouping.v1` LLM, validates full route coverage, and detects workflow prerequisites.
 - **Intent labeling is in place.** `labelRouteIntents()` batches RouteGraph nodes (8/call), calls versioned `intent.v1` prompt, validates per-route labels, and flags routes with confidence < 0.80.
@@ -264,4 +267,4 @@ When **blocked**:
 
 ---
 
-**Last updated:** 2026-06-12 — Features 2.4 and 2.5 completed. Capability grouping with entity pre-clusters + LLM merge; self-refine with consistency checks and pending-review artifact builder.
+**Last updated:** 2026-06-12 — Feature 2.6 completed. Capability builder merges RouteGraph + refined groups into schema-valid draft `Capability[]` with weighted confidence scoring.

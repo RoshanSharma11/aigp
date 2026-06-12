@@ -195,3 +195,29 @@ export {
   type RefineResponse,
   type RefinedCapabilityGroup,
 } from "./reasoner/prompts/refine.v1.js";
+export {
+  aggregateCapabilitySideEffects,
+  aggregateRiskLevel,
+  buildCapabilities,
+  buildCapabilityFromGroup,
+  buildCapabilityOperation,
+  DEFAULT_JSON_SCHEMA,
+  formatSourceRoute,
+  isCapabilityReversible,
+  isConfirmationRequired,
+  resolveInputSchema,
+  resolveOutputSchema,
+  selectDefaultOperation,
+  type BuildCapabilitiesInput,
+} from "./builder/capability.js";
+export {
+  CAPABILITY_CONFIDENCE_WEIGHTS,
+  CAPABILITY_HUMAN_REVIEW_THRESHOLD,
+  computeCapabilityConfidence,
+  computeRouteConfidenceScores,
+  scoreRouteAnalysis,
+  scoreRouteSchema,
+  scoreRouteIntent,
+  shouldNeedHumanReview,
+  type RouteConfidenceScores,
+} from "./builder/confidence.js";
