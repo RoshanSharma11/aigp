@@ -32,6 +32,7 @@ import {
   writeAnalysisArtifacts,
   type WriteAnalysisArtifactsResult,
 } from "../store/writer.js";
+import { resolveAnalyzeLlmProvider } from "./resolve-llm-provider.js";
 
 export interface FullAnalysisResult extends AnalysisResult {
   readonly pendingReview: PendingReviewArtifact;
@@ -137,8 +138,13 @@ export const runFullAnalysis = async (
   }
 
   const config = await resolveAnalysisConfig(resolvedRoot, options.config);
+  const resolvedProvider = await resolveAnalyzeLlmProvider(
+    resolvedRoot,
+    config,
+    options.llmProvider,
+  );
   const provider =
-    options.llmProvider ??
+    resolvedProvider ??
     (await import("../reasoner/llm/factory.js")).createLlmProvider(config.llm);
 
   const createStageClient = (stage: string) =>

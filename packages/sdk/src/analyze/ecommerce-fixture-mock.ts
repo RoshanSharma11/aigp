@@ -92,6 +92,20 @@ export const buildEcommerceMockGroupingRoutes = (): GroupingRouteInput[] => [
   },
 ];
 
+const normalizeComparablePath = (routePath: string): string => {
+  if (routePath.startsWith("/api/") || routePath === "/api") {
+    return routePath;
+  }
+
+  return routePath.startsWith("/") ? `/api${routePath}` : `/api/${routePath}`;
+};
+
+const pathsMatch = (left: string, right: string): boolean =>
+  normalizeComparablePath(left) === normalizeComparablePath(right);
+
+const pathStartsWithPrefix = (routePath: string, prefix: string): boolean =>
+  normalizeComparablePath(routePath).startsWith(normalizeComparablePath(prefix));
+
 export const buildEcommerceMockGroupingResponse = (
   input: CapabilityGroupingInput,
 ): string =>
@@ -103,7 +117,7 @@ export const buildEcommerceMockGroupingResponse = (
         description: "Browse and search products in the store catalog",
         category: "catalog",
         routeIds: input.routes
-          .filter((route) => route.path.startsWith("/api/products"))
+          .filter((route) => pathStartsWithPrefix(route.path, "/api/products"))
           .map((route) => route.routeId),
         requiresAuth: false,
         confidence: 0.93,
@@ -114,7 +128,7 @@ export const buildEcommerceMockGroupingResponse = (
         description: "View and modify the shopping cart",
         category: "cart",
         routeIds: input.routes
-          .filter((route) => route.path.startsWith("/api/cart"))
+          .filter((route) => pathStartsWithPrefix(route.path, "/api/cart"))
           .map((route) => route.routeId),
         prerequisites: ["account_access"],
         requiresAuth: true,
@@ -126,7 +140,7 @@ export const buildEcommerceMockGroupingResponse = (
         description: "Authenticate users and establish sessions",
         category: "auth",
         routeIds: input.routes
-          .filter((route) => route.path.startsWith("/api/auth"))
+          .filter((route) => pathStartsWithPrefix(route.path, "/api/auth"))
           .map((route) => route.routeId),
         requiresAuth: false,
         confidence: 0.95,
@@ -162,7 +176,7 @@ export const createEcommerceFixtureMockProvider = (): MockLlmProvider =>
       return JSON.stringify({
         labels: routes.map((route) => {
           const mockRoute = buildEcommerceMockGroupingRoutes().find(
-            (candidate) => candidate.path === route.path,
+            (candidate) => pathsMatch(candidate.path, route.path),
           );
 
           return {

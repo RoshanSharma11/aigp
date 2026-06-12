@@ -11,6 +11,7 @@ import {
   runFullAnalysis,
   runStaticAnalysisWithArtifacts,
 } from "../analyze/pipeline.js";
+import { resolveAnalyzeLlmProvider } from "../analyze/resolve-llm-provider.js";
 import {
   evaluateCapabilityPrecision,
   formatCapabilityEvalReport,
@@ -196,9 +197,14 @@ export const runAnalyzeCommand = async (
   }
 
   const config = await resolveConfig(parsed.options.rootPath, hooks);
+  const llmProvider = await resolveAnalyzeLlmProvider(
+    parsed.options.rootPath,
+    config,
+    hooks.llmProvider,
+  );
   const analysisResult = await runFullAnalysis(parsed.options.rootPath, {
     config,
-    ...(hooks.llmProvider !== undefined ? { llmProvider: hooks.llmProvider } : {}),
+    ...(llmProvider !== undefined ? { llmProvider } : {}),
     writeArtifacts: true,
   });
 

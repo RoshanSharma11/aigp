@@ -37,7 +37,7 @@ export interface AgentJsonDocument {
   };
 }
 
-const summarizeCapability = (
+export const summarizeCapability = (
   capability: Capability,
   context: DiscoveryGeneratorContext,
 ): AgentJsonCapabilitySummary => ({

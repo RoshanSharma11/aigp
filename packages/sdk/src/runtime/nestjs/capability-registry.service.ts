@@ -2,6 +2,7 @@ import { Inject, Injectable, type OnModuleInit } from "@nestjs/common";
 
 import type { Capability } from "@agent-layer/core";
 
+import { filterApprovedCapabilities } from "../../builder/merger.js";
 import { loadPublishedCapabilities } from "../../store/reader.js";
 import { AGENT_LAYER_MODULE_OPTIONS, type AgentLayerModuleOptions } from "./tokens.js";
 
@@ -16,7 +17,7 @@ export class CapabilityRegistryService implements OnModuleInit {
 
   async onModuleInit(): Promise<void> {
     if (this.options.capabilities !== undefined) {
-      this.approvedCapabilities = [...this.options.capabilities];
+      this.approvedCapabilities = [...filterApprovedCapabilities(this.options.capabilities)];
       return;
     }
 

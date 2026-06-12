@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Param, Patch, Post, UseGuards } from "@nestjs/common";
 
 import { AuthGuard } from "../auth/auth.guard.js";
 import { CartService } from "./cart.service.js";
@@ -9,7 +9,10 @@ import { CartEntity } from "./entities/cart.entity.js";
 @Controller("cart")
 @UseGuards(AuthGuard)
 export class CartController {
-  constructor(private readonly cartService: CartService) {}
+  constructor(
+    @Inject(CartService)
+    private readonly cartService: CartService,
+  ) {}
 
   @Get()
   getCart(): CartEntity {

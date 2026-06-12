@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 const GLOBAL_PREFIX_PATTERN =
-  /setGlobalPrefix\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/u;
+  /setGlobalPrefix\s*\(\s*['"`]([^'"`]+)['"`]/u;
 
 const ENTRY_FILE_CANDIDATES = [
   "src/main.ts",

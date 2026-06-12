@@ -125,6 +125,22 @@ describe("analyze CLI command", () => {
   );
 
   it(
+    "should auto-use the ecommerce fixture mock when no explicit provider is supplied",
+    async () => {
+      const artifactDirectory = path.join(fixtureRoot, ".agent-layer");
+      await rm(artifactDirectory, { recursive: true, force: true });
+
+      const result = await runAnalyzeCommand([fixtureRoot], fixtureRoot);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stderr).toContain("Analysis complete: 7 routes → 3 capabilities");
+
+      await rm(artifactDirectory, { recursive: true, force: true });
+    },
+    30_000,
+  );
+
+  it(
     "should report eval metrics with --eval and pass precision gate",
     async () => {
       const artifactDirectory = path.join(fixtureRoot, ".agent-layer");

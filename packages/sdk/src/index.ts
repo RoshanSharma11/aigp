@@ -138,6 +138,8 @@ export {
 export {
   AGENT_JSON_SPEC_VERSION,
   generateAgentJson,
+  summarizeCapability,
+  type AgentJsonCapabilitySummary,
   type AgentJsonDocument,
 } from "./generators/agent-json.js";
 export {
@@ -186,6 +188,7 @@ export {
   AGENT_LAYER_MODULE_OPTIONS,
   DEFAULT_WELL_KNOWN_CONTROLLER_PATH,
   INTERNAL_ROUTE_PROXY,
+  resolveAgentCapabilitiesControllerPath,
   resolveWellKnownControllerPath,
   type AgentLayerModuleOptions,
 } from "./runtime/nestjs/tokens.js";
@@ -196,6 +199,13 @@ export {
 } from "./runtime/nestjs/internal-route-proxy.js";
 export { ExecutorService } from "./runtime/nestjs/executor.service.js";
 export { DiscoveryController } from "./runtime/nestjs/discovery.controller.js";
+export { CapabilityController } from "./runtime/nestjs/capability.controller.js";
+export { CapabilityGuard } from "./runtime/nestjs/capability.guard.js";
+export { AgentLayerModule } from "./runtime/nestjs/module.js";
+export {
+  resolveAnalyzeLlmProvider,
+  isEcommerceFixtureProject,
+} from "./analyze/resolve-llm-provider.js";
 export {
   DEFAULT_LLM_MAX_RETRIES,
   DEFAULT_LLM_RETRY_BACKOFF_MS,

@@ -32,25 +32,25 @@ When **blocked**:
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 3 — Runtime & Agent Access |
+| **Current phase** | Phase 4 — Developer Experience |
 | **Current feature** | None started |
-| **MVP progress** | 85% (23/27 MVP features through Phase 3 + 4.1) |
-| **Last milestone** | Features 3.3–3.4 complete — ExecutorService + DiscoveryController |
-| **Next milestone** | Feature 3.5 complete — CapabilityController |
+| **MVP progress** | 96% (26/27 MVP features through Phase 3 + 4.1) |
+| **Last milestone** | Phase 3 complete — CapabilityController, AgentLayerModule, E2E agent flow |
+| **Next milestone** | Feature 4.1 — Human review workflow |
 
 ---
 
 ## Current Focus
 
-**Nothing in progress.** Features 3.3–3.4 complete. Ready to begin **Feature 3.5 CapabilityController**.
+**Nothing in progress.** Phase 3 complete (G3 runtime). Ready to begin **Feature 4.1 Human review workflow**.
 
 ---
 
 ## Next Up
 
-1. **Feature 3.5** — CapabilityController
-2. **Feature 3.6** — AgentLayerModule
-3. **Feature 3.7** — End-to-end agent test
+1. **Feature 4.1** — Human review workflow
+2. **Feature 4.2** — CLI utilities (validate, diff, doctor)
+3. **Feature 4.3** — MCP dev server (`serve-mcp`)
 
 ---
 
@@ -128,9 +128,9 @@ When **blocked**:
 | 3.2 | Output generators | done | 2026-06-12 | `generators/` produces agent.json, agent-card.json, openapi.json, mcp-tools.json; `--publish` writes all |
 | 3.3 | ExecutorService | done | 2026-06-12 | `runtime/executor.ts` + NestJS `ExecutorService`; Ajv input/output validation; in-process proxy via `ExpressInternalRouteProxy`; auth passthrough; structured envelope |
 | 3.4 | DiscoveryController | done | 2026-06-12 | `runtime/nestjs/discovery.controller.ts` serves `/.well-known/agent.json`, `agent-card.json`, `openapi.json` dynamically from approved capabilities |
-| 3.5 | CapabilityController | not_started | — | |
-| 3.6 | AgentLayerModule | not_started | — | |
-| 3.7 | End-to-end agent test | not_started | — | |
+| 3.5 | CapabilityController | done | 2026-06-12 | `runtime/nestjs/capability.controller.ts` — list/inspect/execute; `CapabilityGuard` blocks pending-review; `@HttpCode(200)` on POST |
+| 3.6 | AgentLayerModule | done | 2026-06-12 | `runtime/nestjs/module.ts` `forRoot()` wires discovery + capability controllers, registry, executor, proxy; fixture app integrated |
+| 3.7 | End-to-end agent test | done | 2026-06-12 | `packages/sdk/test/e2e/agent-flow.test.ts`; `docs/agent-quickstart.md` with curl examples |
 
 ---
 
@@ -175,12 +175,12 @@ When **blocked**:
 
 - [ ] `analyze` on fixture → `capabilities.json` with ≥90% precision
 - [ ] Capability count curated (10–30), not 1:1 with routes
-- [ ] `/.well-known/agent.json` live on public origin
-- [ ] `POST /agent/capabilities/:id` executes correctly
+- [x] `/.well-known/agent.json` live on public origin
+- [x] `POST /agent/capabilities/:id` executes correctly
 - [ ] Low-confidence capabilities flagged; overrides work
-- [ ] Draft/pending blocked at runtime
+- [x] Draft/pending blocked at runtime
 - [ ] `serve-mcp` works with Cursor/Claude Desktop
-- [ ] E2E agent flow test passes
+- [x] E2E agent flow test passes
 
 ---
 
@@ -190,6 +190,12 @@ When **blocked**:
 
 | Date | Feature | Decision | Rationale |
 |---|---|---|---|
+| 2026-06-12 | 3.7 | E2E test at `packages/sdk/test/e2e/agent-flow.test.ts` per code-standards | Full analyze → approve → runtime discover/execute flow on fixture modules |
+| 2026-06-12 | 3.6 | `AgentLayerModule.forRoot()` registers all runtime controllers and providers | Single integration point for NestJS apps; fixture excludes `/agent` and `/.well-known` from global API prefix |
+| 2026-06-12 | 3.6 | Default mock LLM auto-uses `createEcommerceFixtureMockProvider()` when `ground-truth.json` fixture is `nestjs-ecommerce` | Local dev and CLI work without explicit mock injection |
+| 2026-06-12 | 3.5 | Package name locked as `@agent-layer/sdk` | User decision; no rename to `@aigp/sdk` |
+| 2026-06-12 | 3.5 | `CapabilityGuard` blocks `needsHumanReview` with 403; draft/disabled filtered at registry load | Defense in depth; list endpoint never exposes non-approved capabilities |
+| 2026-06-12 | 3.5 | POST execute returns HTTP 200 with structured envelope (`@HttpCode(200)`) | NestJS defaults POST to 201; agent clients expect 200 with success/failure in body |
 | 2026-06-12 | 3.4 | DiscoveryController generates docs at request time via existing generators | Keeps runtime in sync with approved capabilities without static file reads |
 | 2026-06-12 | 3.3 | Pure execution logic in `runtime/executor.ts`; NestJS wrapper in `runtime/nestjs/executor.service.ts` | Unit-testable core separate from DI/framework; matches module boundaries |
 | 2026-06-12 | 3.3 | `ExpressInternalRouteProxy` uses loopback `fetch` against the listening NestJS HTTP server | Reliable in-process proxy; raw req/res injection hangs with NestJS/Express test harness |
@@ -251,6 +257,8 @@ When **blocked**:
 
 ## Notes
 
+- **Phase 3 runtime is complete.** `AgentLayerModule.forRoot()` serves discovery (`/.well-known/*`), capability list/inspect/execute (`/agent/capabilities/*`), and proxies execution to internal routes. E2E test covers discover → search_products → auth-gated cart.
+- **Default mock auto-detection is in place.** `resolveAnalyzeLlmProvider()` uses the ecommerce fixture mock when `config.llm.provider === "mock"` and `ground-truth.json` identifies the fixture — no explicit hook required for local dev.
 - **Runtime executor and discovery are in place.** `executeCapability()` validates input/output, proxies to internal routes, and returns structured envelopes; `DiscoveryController` serves AWP/A2A/OpenAPI docs dynamically from `CapabilityRegistryService`.
 - **Store read path and generators are in place.** `loadPublishedCapabilities()` merges overrides and returns approved-only; `publishCapabilities()` writes `capabilities.json` + discovery docs; `analyze --publish` integrated.
 - **Accuracy evaluation is in place.** `evaluateCapabilityPrecision()` compares capabilities vs `ground-truth.json`; `analyze --eval` reports precision/recall/count-ratio.
@@ -271,7 +279,7 @@ When **blocked**:
 - **G2 gate status:** Precision 100% on fixture (pass); count ratio 3/7 = 43% (fail — documented; gate designed for larger apps).
 - **Hardest feature:** 2.4 Capability grouping — entity-centric clustering + LLM merge.
 - **Accuracy benchmark:** `fixtures/nestjs-ecommerce/ground-truth.json`.
-- **Open question:** Package name `@agent-layer/sdk` vs `@aigp/sdk` — using `@agent-layer/sdk` until decided.
+- **Open question:** Package name `@agent-layer/sdk` vs `@aigp/sdk` — locked to `@agent-layer/sdk`.
 
 ---
 
@@ -286,4 +294,4 @@ When **blocked**:
 
 ---
 
-**Last updated:** 2026-06-12 — Features 3.3–3.4 shipped: ExecutorService with in-process proxy, JSON Schema validation, and DiscoveryController for `/.well-known/*` endpoints.
+**Last updated:** 2026-06-12 — Phase 3 complete: CapabilityController, AgentLayerModule, E2E agent flow, fixture mock auto-detection, and agent quickstart docs.
