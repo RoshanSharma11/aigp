@@ -16,3 +16,15 @@ export {
   detectFramework,
   type DetectedFramework,
 } from "./scanner/detector.js";
+export { scanProject } from "./scanner/scanner.js";
+export {
+  buildFileGraph,
+  classifyProjectFiles,
+  listProjectSourceFiles,
+  scanProjectFiles,
+} from "./scanner/file-graph.js";
+export {
+  resolvePathAlias,
+  resolveTsConfig,
+  type TsConfigResolution,
+} from "./scanner/tsconfig.js";

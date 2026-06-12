@@ -34,23 +34,23 @@ When **blocked**:
 |---|---|
 | **Current phase** | Phase 1 — Static Analysis |
 | **Current feature** | None started |
-| **MVP progress** | 27% (6/22 MVP features: Phases 0–3 + 4.1) |
-| **Last milestone** | Feature 1.1 complete — framework adapter interface detects NestJS fixture |
-| **Next milestone** | Feature 1.2 complete — project scanner lists controller files in fixture |
+| **MVP progress** | 32% (7/22 MVP features: Phases 0–3 + 4.1) |
+| **Last milestone** | Feature 1.2 complete — project scanner lists controller files in fixture |
+| **Next milestone** | Feature 1.3 complete — NestJS route extraction from fixture controllers |
 
 ---
 
 ## Current Focus
 
-**Nothing in progress.** Ready to begin **Phase 1 — Feature 1.2 (Project scanner)**.
+**Nothing in progress.** Ready to begin **Phase 1 — Feature 1.3 (NestJS route extraction)**.
 
 ---
 
 ## Next Up
 
-1. **Feature 1.2** — Project scanner
-2. **Feature 1.3** — NestJS route extraction (Layer A)
-3. **Feature 1.4** — Type extraction (Layer B)
+1. **Feature 1.3** — NestJS route extraction (Layer A)
+2. **Feature 1.4** — Type extraction (Layer B)
+3. **Feature 1.5** — Call graph (Layer C)
 
 ---
 
@@ -91,7 +91,7 @@ When **blocked**:
 | Feature | Name | Status | Completed | Notes |
 |---|---|---|---|---|
 | 1.1 | Framework adapter interface | done | 2026-06-12 | `FrameworkAdapter` interface, registry, NestJS detection via `@nestjs/core` in package.json |
-| 1.2 | Project scanner | not_started | — | |
+| 1.2 | Project scanner | done | 2026-06-12 | Walks source tree, classifies controllers/DTOs/entities, builds import graph, resolves tsconfig |
 | 1.3 | NestJS route extraction (Layer A) | not_started | — | |
 | 1.4 | Type extraction (Layer B) | not_started | — | |
 | 1.5 | Call graph (Layer C) | not_started | — | |
@@ -190,7 +190,8 @@ When **blocked**:
 
 | Date | Feature | Decision | Rationale |
 |---|---|---|---|
-| 2026-06-12 | 1.1 | NestJS adapter extraction methods throw until Features 1.3–1.4 | Keeps 1.1 scoped to detection/registry; route and type extraction belong in later static-analysis features |
+| 2026-06-12 | 1.2 | Use regex-based import/export extraction for file graph in Phase 1 | Sufficient for dependency graph now; ts-morph reserved for Feature 1.4 type extraction |
+| 2026-06-12 | 1.2 | Store ScanContext file paths relative to project root with POSIX separators | Keeps artifacts serializable and portable across platforms |
 | 2026-06-12 | 1.1 | Detect framework by checking `dependencies`, `devDependencies`, and `peerDependencies` for `@nestjs/core` | Matches NestJS app layouts without executing user code |
 | 2026-06-12 | 0.4 | Keep config loading limited to path resolution, JSON parsing, schema validation, and default generation | Delivers the shared contract now without pulling CLI/runtime concerns forward |
 | 2026-06-12 | 0.3 | Use Zod validators alongside checked-in JSON Schema files | Keeps runtime validation ergonomic while preserving explicit artifact contracts |
@@ -216,7 +217,7 @@ When **blocked**:
 
 ## Notes
 
-- **Phase 1 has started.** Feature 1.1 adds the scanner adapter interface, registry, and NestJS detection used by later static-analysis work.
+- **Project scanner is in place.** `scanProject()` returns a typed `ScanContext` with controller/DTO/entity file lists and an import dependency graph for the fixture app.
 - **Phase 0 foundation is now in place.** Root build/test tooling passes, and the shared type/schema layer is ready for subsequent features.
 - **Fixture baseline is established.** `fixtures/nestjs-ecommerce` now provides products, cart, and auth routes plus `ground-truth.json` for upcoming static-analysis accuracy checks.
 - **Critical path:** 0.2 → 1.3 → 1.6 → 2.4 → 2.7 → 3.3 → 3.6 → 3.7
@@ -237,4 +238,4 @@ When **blocked**:
 
 ---
 
-**Last updated:** 2026-06-12 — Feature 1.1 completed. Framework adapter interface, registry, and NestJS detection implemented with tests.
+**Last updated:** 2026-06-12 — Feature 1.2 completed. Project scanner walks source files, classifies NestJS artifacts, and builds import graph.
