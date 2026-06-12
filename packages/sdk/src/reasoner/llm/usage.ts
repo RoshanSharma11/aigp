@@ -10,6 +10,9 @@ const MODEL_PRICING: Record<string, ModelPricing> = {
   "gpt-4o-mini": { inputUsdPer1M: 0.15, outputUsdPer1M: 0.6 },
   "claude-3-5-sonnet-20241022": { inputUsdPer1M: 3, outputUsdPer1M: 15 },
   "claude-3-5-haiku-20241022": { inputUsdPer1M: 0.8, outputUsdPer1M: 4 },
+  "gemini-2.0-flash": { inputUsdPer1M: 0.075, outputUsdPer1M: 0.3 },
+  "gemini-1.5-pro": { inputUsdPer1M: 1.25, outputUsdPer1M: 5 },
+  "gemini-1.5-flash": { inputUsdPer1M: 0.075, outputUsdPer1M: 0.3 },
   "mock-model-v1": { inputUsdPer1M: 0, outputUsdPer1M: 0 },
 };
 

@@ -2,6 +2,7 @@ import type { LlmConfig } from "@agent-layer/core";
 
 import { LlmError } from "./errors.js";
 import { AnthropicLlmProvider } from "./anthropic-provider.js";
+import { GeminiLlmProvider } from "./gemini-provider.js";
 import { MockLlmProvider } from "./mock-provider.js";
 import { OpenAiLlmProvider } from "./openai-provider.js";
 import { LlmClient } from "./client.js";
@@ -9,6 +10,7 @@ import type { LlmClientOptions, LlmProvider } from "./types.js";
 
 const DEFAULT_OPENAI_API_KEY_ENV = "OPENAI_API_KEY";
 const DEFAULT_ANTHROPIC_API_KEY_ENV = "ANTHROPIC_API_KEY";
+const DEFAULT_GEMINI_API_KEY_ENV = "GEMINI_API_KEY";
 
 const resolveApiKey = (
   config: LlmConfig,
@@ -39,6 +41,11 @@ export const createLlmProvider = (config: LlmConfig): LlmProvider => {
     case "anthropic":
       return new AnthropicLlmProvider({
         apiKey: resolveApiKey(config, DEFAULT_ANTHROPIC_API_KEY_ENV),
+        defaultModel: config.model,
+      });
+    case "gemini":
+      return new GeminiLlmProvider({
+        apiKey: resolveApiKey(config, DEFAULT_GEMINI_API_KEY_ENV),
         defaultModel: config.model,
       });
     default: {

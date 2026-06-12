@@ -1,0 +1,10 @@
+{
+  "llm": {
+    "provider": "gemini",
+    "model": "gemini-2.0-flash",
+    "apiKeyEnvVar": "GEMINI_API_KEY"
+  },
+  "confidenceThreshold": 0.85,
+  "excludeRoutes": ["/health", "/metrics"],
+  "baseUrl": "http://localhost:3000"
+}

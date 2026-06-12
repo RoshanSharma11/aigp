@@ -9,6 +9,7 @@ import {
 import { LlmError } from "./errors.js";
 import { extractJsonContent, parseJsonContent } from "./json.js";
 import { AnthropicLlmProvider } from "./anthropic-provider.js";
+import { GeminiLlmProvider } from "./gemini-provider.js";
 import {
   createLlmClient,
   createLlmClientFromProvider,
@@ -73,6 +74,16 @@ describe("llm usage tracker", () => {
     });
 
     expect(cost).toBeCloseTo(0.75, 5);
+  });
+
+  it("should estimate Gemini model cost", () => {
+    const cost = estimateLlmCostUsd("gemini-2.0-flash", {
+      promptTokens: 1_000_000,
+      completionTokens: 1_000_000,
+      totalTokens: 2_000_000,
+    });
+
+    expect(cost).toBeCloseTo(0.375, 5);
   });
 });
 
@@ -290,6 +301,19 @@ describe("createLlmProvider", () => {
     vi.unstubAllEnvs();
   });
 
+  it("should create a Gemini provider when API key env is set", () => {
+    vi.stubEnv("GEMINI_API_KEY", "test-gemini-key");
+
+    const provider = createLlmProvider({
+      provider: "gemini",
+      model: "gemini-2.0-flash",
+    });
+
+    expect(provider).toBeInstanceOf(GeminiLlmProvider);
+
+    vi.unstubAllEnvs();
+  });
+
   it("should create a client from config", () => {
     const client = createLlmClient({
       provider: "mock",
@@ -375,6 +399,137 @@ describe("AnthropicLlmProvider", () => {
       promptTokens: 30,
       completionTokens: 20,
       totalTokens: 50,
+    });
+  });
+});
+
+describe("GeminiLlmProvider", () => {
+  it("should request JSON mode and parse usage from API response", async () => {
+    const fetchImpl = vi.fn<typeof fetch>(async () =>
+      Response.json({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: '{"domain":"ecommerce"}' }],
+            },
+            finishReason: "STOP",
+          },
+        ],
+        usageMetadata: {
+          promptTokenCount: 15,
+          candidatesTokenCount: 10,
+          totalTokenCount: 25,
+        },
+      }),
+    );
+
+    const provider = new GeminiLlmProvider({
+      apiKey: "test-key",
+      defaultModel: "gemini-2.0-flash",
+      fetchImpl,
+    });
+
+    const response = await provider.complete({
+      system: "system",
+      user: "user",
+      model: "gemini-2.0-flash",
+    });
+
+    expect(response.content).toBe('{"domain":"ecommerce"}');
+    expect(response.usage).toEqual({
+      promptTokens: 15,
+      completionTokens: 10,
+      totalTokens: 25,
+    });
+
+    expect(fetchImpl).toHaveBeenCalledOnce();
+
+    const callArgs = fetchImpl.mock.calls[0];
+    expect(callArgs?.[0]).toBe(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+    );
+
+    const requestInit = callArgs?.[1];
+    expect(requestInit?.headers).toMatchObject({
+      "x-goog-api-key": "test-key",
+    });
+
+    const requestBody = JSON.parse(String(requestInit?.body)) as {
+      systemInstruction: { parts: readonly { text: string }[] };
+      contents: readonly { role: string; parts: readonly { text: string }[] }[];
+      generationConfig: { responseMimeType: string };
+    };
+
+    expect(requestBody.systemInstruction.parts[0]?.text).toContain("system");
+    expect(requestBody.contents[0]?.parts[0]?.text).toBe("user");
+    expect(requestBody.generationConfig.responseMimeType).toBe("application/json");
+  });
+
+  it("should include temperature in request body if provided", async () => {
+    const fetchImpl = vi.fn<typeof fetch>(async () =>
+      Response.json({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: '{"domain":"ecommerce"}' }],
+            },
+            finishReason: "STOP",
+          },
+        ],
+        usageMetadata: {
+          promptTokenCount: 15,
+          candidatesTokenCount: 10,
+        },
+      }),
+    );
+
+    const provider = new GeminiLlmProvider({
+      apiKey: "test-key",
+      defaultModel: "gemini-2.0-flash",
+      fetchImpl,
+    });
+
+    await provider.complete({
+      system: "system",
+      user: "user",
+      model: "gemini-2.0-flash",
+      temperature: 0.7,
+    });
+
+    const callArgs = fetchImpl.mock.calls[0];
+    const requestBody = JSON.parse(String(callArgs?.[1]?.body)) as {
+      generationConfig: { temperature?: number };
+    };
+
+    expect(requestBody.generationConfig.temperature).toBe(0.7);
+  });
+
+  it("should throw when Gemini blocks the response", async () => {
+    const fetchImpl = vi.fn<typeof fetch>(async () =>
+      Response.json({
+        candidates: [
+          {
+            finishReason: "SAFETY",
+          },
+        ],
+      }),
+    );
+
+    const provider = new GeminiLlmProvider({
+      apiKey: "test-key",
+      defaultModel: "gemini-2.0-flash",
+      fetchImpl,
+    });
+
+    await expect(
+      provider.complete({
+        system: "system",
+        user: "user",
+        model: "gemini-2.0-flash",
+      }),
+    ).rejects.toMatchObject({
+      name: "LlmError",
+      code: "LLM_EMPTY_RESPONSE",
     });
   });
 });

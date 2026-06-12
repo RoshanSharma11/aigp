@@ -1,5 +1,5 @@
 export interface LlmConfig {
-  readonly provider: "openai" | "anthropic" | "mock";
+  readonly provider: "openai" | "anthropic" | "gemini" | "mock";
   readonly model: string;
   readonly apiKeyEnvVar?: string | undefined;
   readonly temperature?: number | undefined;

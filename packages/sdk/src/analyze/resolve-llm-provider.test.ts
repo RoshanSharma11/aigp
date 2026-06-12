@@ -50,4 +50,16 @@ describe("resolveAnalyzeLlmProvider", () => {
 
     expect(provider).toBe(explicitProvider);
   });
+
+  it("should not auto-inject the fixture mock when provider is gemini", async () => {
+    const provider = await resolveAnalyzeLlmProvider(fixtureRoot, {
+      ...createDefaultAgentLayerConfig(),
+      llm: {
+        provider: "gemini",
+        model: "gemini-2.0-flash",
+      },
+    });
+
+    expect(provider).toBeUndefined();
+  });
 });

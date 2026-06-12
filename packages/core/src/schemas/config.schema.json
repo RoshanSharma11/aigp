@@ -12,7 +12,7 @@
       "properties": {
         "provider": {
           "type": "string",
-          "enum": ["openai", "anthropic", "mock"]
+          "enum": ["openai", "anthropic", "gemini", "mock"]
         },
         "model": {
           "type": "string",
