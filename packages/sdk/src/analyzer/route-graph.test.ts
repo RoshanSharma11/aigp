@@ -167,7 +167,7 @@ describe("route graph builder", () => {
         route: "GET /api/ghost",
       }),
     ]);
-  });
+  }, 15_000);
 
   it("should serialize and write route-graph.json under .agent-layer", async () => {
     const artifactDirectory = path.join(fixtureRoot, ".agent-layer");

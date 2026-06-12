@@ -35,6 +35,7 @@ export interface AnalyzeCommandOptions {
   readonly eval: boolean;
   readonly publish: boolean;
   readonly json: boolean;
+  readonly incremental: boolean;
 }
 
 export interface AnalyzeCommandHooks {
@@ -53,6 +54,7 @@ const ANALYZE_FLAGS = new Set([
   "--eval",
   "--publish",
   "--json",
+  "--incremental",
   "--verbose",
   "--help",
   "-h",
@@ -68,12 +70,13 @@ export const parseAnalyzeCommandOptions = (
     return {
       ok: false,
       message: [
-        "agent-layer analyze [path] [--static-only] [--eval] [--publish] [--json]",
+        "agent-layer analyze [path] [--static-only] [--eval] [--publish] [--incremental] [--json]",
         "",
         "Run capability analysis and write .agent-layer artifacts",
         "  --static-only  Static RouteGraph only (no LLM)",
         "  --eval         Compare output against ground-truth.json",
         "  --publish      Publish approved capabilities and generate discovery docs",
+        "  --incremental  Re-analyze changed route files; preserve approved capabilities",
         "  --json         Emit structured JSON to stdout",
       ].join("\n"),
       exitCode: 0,
@@ -123,6 +126,7 @@ export const parseAnalyzeCommandOptions = (
       eval: args.includes("--eval"),
       publish: args.includes("--publish"),
       json: args.includes("--json"),
+      incremental: args.includes("--incremental"),
     },
   };
 };
@@ -169,6 +173,14 @@ export const runAnalyzeCommand = async (
     };
   }
 
+  if (parsed.options.staticOnly && parsed.options.incremental) {
+    return {
+      exitCode: 2,
+      stderr: "analyze --incremental cannot be combined with --static-only\n",
+      stdout: "",
+    };
+  }
+
   if (parsed.options.staticOnly) {
     const analysisResult = await runStaticAnalysis(parsed.options.rootPath);
     const artifactPath = await writeRouteGraphArtifact(
@@ -206,6 +218,7 @@ export const runAnalyzeCommand = async (
     config,
     ...(llmProvider !== undefined ? { llmProvider } : {}),
     writeArtifacts: true,
+    incremental: parsed.options.incremental,
   });
 
   const stderrLines = [

@@ -30,6 +30,7 @@ export const ANALYSIS_META_ARTIFACT_VERSION = "1.0.0";
 export interface AnalysisMetaArtifact extends AnalysisMeta {
   readonly version: typeof ANALYSIS_META_ARTIFACT_VERSION;
   readonly llm?: LlmUsageStats | undefined;
+  readonly routeFileHashes?: Readonly<Record<string, string>> | undefined;
 }
 
 export interface AnalysisArtifacts {
@@ -71,6 +72,7 @@ export const serializeCapabilitiesDraft = (
 export const serializeAnalysisMetaArtifact = (
   meta: AnalysisMeta,
   llmUsage?: LlmUsageStats,
+  routeFileHashes?: Readonly<Record<string, string>>,
 ): AnalysisMetaArtifact => ({
   version: ANALYSIS_META_ARTIFACT_VERSION,
   generatedAt: meta.generatedAt,
@@ -80,6 +82,7 @@ export const serializeAnalysisMetaArtifact = (
   warningCount: meta.warningCount,
   llmCostUsd: meta.llmCostUsd,
   ...(llmUsage !== undefined ? { llm: llmUsage } : {}),
+  ...(routeFileHashes !== undefined ? { routeFileHashes } : {}),
 });
 
 export const writeCapabilitiesDraft = async (

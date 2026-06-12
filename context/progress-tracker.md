@@ -34,23 +34,23 @@ When **blocked**:
 |---|---|
 | **Current phase** | Phase 4 — Developer Experience |
 | **Current feature** | None started |
-| **MVP progress** | 96% (26/27 MVP features through Phase 3 + 4.1) |
-| **Last milestone** | Phase 3 complete — CapabilityController, AgentLayerModule, E2E agent flow |
-| **Next milestone** | Feature 4.1 — Human review workflow |
+| **MVP progress** | 100% (27/27 MVP features through Phase 4) |
+| **Last milestone** | Phase 4 complete — review workflow, CLI utilities, MCP dev server, incremental sync |
+| **Next milestone** | Phase 5.1 — Framework adapters |
 
 ---
 
 ## Current Focus
 
-**Nothing in progress.** Phase 3 complete (G3 runtime). Ready to begin **Feature 4.1 Human review workflow**.
+**Nothing in progress.** Phase 4 complete (G4 review workflow). Ready to begin **Phase 5 — Scale & Protocols**.
 
 ---
 
 ## Next Up
 
-1. **Feature 4.1** — Human review workflow
-2. **Feature 4.2** — CLI utilities (validate, diff, doctor)
-3. **Feature 4.3** — MCP dev server (`serve-mcp`)
+1. **Feature 5.1** — Framework adapters (Express, FastAPI, etc.)
+2. **Feature 5.2** — CI integration (`analyze --check`)
+3. **Feature 5.3** — RAG tool serving
 
 ---
 
@@ -141,10 +141,10 @@ When **blocked**:
 
 | Feature | Name | Status | Completed | Notes |
 |---|---|---|---|---|
-| 4.1 | Human review workflow | not_started | — | |
-| 4.2 | CLI utilities (validate, diff, doctor) | not_started | — | |
-| 4.3 | MCP dev server (`serve-mcp`) | not_started | — | |
-| 4.4 | Incremental re-analysis | not_started | — | |
+| 4.1 | Human review workflow | done | 2026-06-12 | `review list/approve/reject/edit` CLI; `store/review.ts` + `overrides-writer.ts`; G4 verified in tests |
+| 4.2 | CLI utilities (validate, diff, doctor) | done | 2026-06-12 | `validate`, `diff`, `doctor` commands; `store/validate.ts` + `cli/doctor.ts` |
+| 4.3 | MCP dev server (`serve-mcp`) | done | 2026-06-12 | `cli/serve-mcp.ts` stdio MCP via `@modelcontextprotocol/sdk`; `docs/mcp-setup.md` |
+| 4.4 | Incremental re-analysis | done | 2026-06-12 | `store/incremental.ts`; `analyze --incremental`; route file hashes in `analysis-meta.json` |
 
 ---
 
@@ -177,9 +177,9 @@ When **blocked**:
 - [ ] Capability count curated (10–30), not 1:1 with routes
 - [x] `/.well-known/agent.json` live on public origin
 - [x] `POST /agent/capabilities/:id` executes correctly
-- [ ] Low-confidence capabilities flagged; overrides work
+- [x] Low-confidence capabilities flagged; overrides work
 - [x] Draft/pending blocked at runtime
-- [ ] `serve-mcp` works with Cursor/Claude Desktop
+- [x] `serve-mcp` works with Cursor/Claude Desktop
 - [x] E2E agent flow test passes
 
 ---
@@ -190,7 +190,10 @@ When **blocked**:
 
 | Date | Feature | Decision | Rationale |
 |---|---|---|---|
-| 2026-06-12 | 3.7 | E2E test at `packages/sdk/test/e2e/agent-flow.test.ts` per code-standards | Full analyze → approve → runtime discover/execute flow on fixture modules |
+| 2026-06-12 | 4.4 | Route file hashes stored in `analysis-meta.json`; `--incremental` skips LLM when no files changed | Preserves approved capabilities via merge; cheap no-op re-runs when code unchanged |
+| 2026-06-12 | 4.3 | MCP stdio server uses `@modelcontextprotocol/sdk`; tools proxy to `POST /agent/capabilities/:id` | Matches architecture dev-only MCP; reuses runtime execution path |
+| 2026-06-12 | 4.1 | Review edits write to `overrides.json` only; draft artifact never mutated by review CLI | Keeps analyze output immutable; publish path unchanged |
+| 2026-06-12 | 4.1 | `review approve` sets `status: approved` + `needsHumanReview: false` in overrides | Clears human-review gate for approved capabilities at runtime |
 | 2026-06-12 | 3.6 | `AgentLayerModule.forRoot()` registers all runtime controllers and providers | Single integration point for NestJS apps; fixture excludes `/agent` and `/.well-known` from global API prefix |
 | 2026-06-12 | 3.6 | Default mock LLM auto-uses `createEcommerceFixtureMockProvider()` when `ground-truth.json` fixture is `nestjs-ecommerce` | Local dev and CLI work without explicit mock injection |
 | 2026-06-12 | 3.5 | Package name locked as `@agent-layer/sdk` | User decision; no rename to `@aigp/sdk` |
@@ -257,6 +260,7 @@ When **blocked**:
 
 ## Notes
 
+- **Phase 4 developer experience is complete.** Review CLI (`list/approve/reject/edit`), utility commands (`validate`, `diff`, `doctor`), MCP dev server (`serve-mcp`), and incremental analysis (`--incremental`) are implemented with tests.
 - **Phase 3 runtime is complete.** `AgentLayerModule.forRoot()` serves discovery (`/.well-known/*`), capability list/inspect/execute (`/agent/capabilities/*`), and proxies execution to internal routes. E2E test covers discover → search_products → auth-gated cart.
 - **Default mock auto-detection is in place.** `resolveAnalyzeLlmProvider()` uses the ecommerce fixture mock when `config.llm.provider === "mock"` and `ground-truth.json` identifies the fixture — no explicit hook required for local dev.
 - **Runtime executor and discovery are in place.** `executeCapability()` validates input/output, proxies to internal routes, and returns structured envelopes; `DiscoveryController` serves AWP/A2A/OpenAPI docs dynamically from `CapabilityRegistryService`.
@@ -294,4 +298,4 @@ When **blocked**:
 
 ---
 
-**Last updated:** 2026-06-12 — Phase 3 complete: CapabilityController, AgentLayerModule, E2E agent flow, fixture mock auto-detection, and agent quickstart docs.
+**Last updated:** 2026-06-12 — Phase 4 complete: review workflow, CLI utilities, MCP dev server, incremental re-analysis.

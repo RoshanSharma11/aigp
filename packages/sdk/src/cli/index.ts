@@ -1,9 +1,14 @@
 import { runAnalyzeCommand } from "./analyze.js";
+import { runReviewCommand } from "./review.js";
+import { runDiffCommand, runDoctorCommand, runValidateCommand } from "./utilities.js";
+import { runServeMcpCommand } from "./serve-mcp.js";
 
 const HELP_TEXT = `agent-layer <command> [options] [path]
 
 Commands: analyze, validate, diff, serve-mcp, doctor, review
-Global flags: --verbose, --config <path>, --help`;
+Global flags: --verbose, --config <path>, --help
+
+Run 'agent-layer <command> --help' for command-specific usage.`;
 
 export const formatHelpText = (): string => HELP_TEXT;
 
@@ -42,6 +47,51 @@ export const runCliAsync = async (
 
   if (command === "analyze") {
     const result = await runAnalyzeCommand(commandArgs);
+    return {
+      exitCode: result.exitCode,
+      stdout: result.stdout,
+      stderr: result.stderr,
+    };
+  }
+
+  if (command === "review") {
+    const result = await runReviewCommand(commandArgs);
+    return {
+      exitCode: result.exitCode,
+      stdout: result.stdout,
+      stderr: result.stderr,
+    };
+  }
+
+  if (command === "validate") {
+    const result = await runValidateCommand(commandArgs);
+    return {
+      exitCode: result.exitCode,
+      stdout: result.stdout,
+      stderr: result.stderr,
+    };
+  }
+
+  if (command === "diff") {
+    const result = await runDiffCommand(commandArgs);
+    return {
+      exitCode: result.exitCode,
+      stdout: result.stdout,
+      stderr: result.stderr,
+    };
+  }
+
+  if (command === "doctor") {
+    const result = await runDoctorCommand(commandArgs);
+    return {
+      exitCode: result.exitCode,
+      stdout: result.stdout,
+      stderr: result.stderr,
+    };
+  }
+
+  if (command === "serve-mcp") {
+    const result = await runServeMcpCommand(commandArgs);
     return {
       exitCode: result.exitCode,
       stdout: result.stdout,

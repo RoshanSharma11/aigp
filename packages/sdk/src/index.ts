@@ -52,6 +52,19 @@ export {
   type AnalyzeCommandResult,
 } from "./cli/analyze.js";
 export { runCliAsync } from "./cli/index.js";
+export { runReviewCommand } from "./cli/review.js";
+export {
+  runDiffCommand,
+  runDoctorCommand,
+  runValidateCommand,
+} from "./cli/utilities.js";
+export { runDoctorChecks } from "./cli/doctor.js";
+export {
+  createMcpServer,
+  executeMcpToolCall,
+  runServeMcpCommand,
+  startMcpServer,
+} from "./cli/serve-mcp.js";
 export {
   createEcommerceFixtureMockProvider,
   ECOMMERCE_DOMAIN_CLASSIFICATION,
@@ -128,6 +141,37 @@ export {
   mergeCapabilityOverride,
   mergeCapabilityOverrides,
 } from "./builder/merger.js";
+export {
+  approveCapabilities,
+  editCapabilityReview,
+  listReviewItems,
+  rejectCapabilities,
+  verifyApprovedOnlyForRuntime,
+  type ReviewItem,
+  type ReviewListResult,
+} from "./store/review.js";
+export {
+  buildOverridesArtifact,
+  mergeOverrideEntries,
+  upsertCapabilityOverrides,
+  writeOverridesArtifact,
+} from "./store/overrides-writer.js";
+export {
+  diffCapabilitiesSincePublish,
+  validateProjectArtifacts,
+  type CapabilityDiffEntry,
+  type DiffCapabilitiesResult,
+  type ValidateArtifactsResult,
+} from "./store/validate.js";
+export {
+  buildRouteFileHashMap,
+  capabilityIsAffectedByRoutes,
+  findChangedRouteFiles,
+  mergeIncrementalCapabilities,
+  resolveIncrementalAnalysisState,
+  type IncrementalAnalysisState,
+  type RouteFileHashMap,
+} from "./store/incremental.js";
 export {
   generateDiscoveryArtifacts,
   generateAndWriteDiscoveryArtifacts,

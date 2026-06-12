@@ -26,7 +26,14 @@ import type { LlmProvider, LlmUsageStats } from "../reasoner/llm/types.js";
 import { labelRouteIntents } from "../reasoner/intent.js";
 import type { PendingReviewArtifact } from "../reasoner/prompts/refine.v1.js";
 import { refineCapabilityGroups } from "../reasoner/refine.js";
+import { loadCapabilitiesDraftArtifact } from "../store/reader.js";
 import {
+  mergeIncrementalCapabilities,
+  resolveIncrementalAnalysisState,
+} from "../store/incremental.js";
+import {
+  PENDING_REVIEW_FILE,
+  resolveAgentLayerDirectory,
   serializeAnalysisMetaArtifact,
   serializeCapabilitiesDraft,
   writeAnalysisArtifacts,
@@ -44,6 +51,7 @@ export interface RunFullAnalysisOptions {
   readonly llmProvider?: LlmProvider | undefined;
   readonly writeArtifacts?: boolean | undefined;
   readonly generatedAt?: string | undefined;
+  readonly incremental?: boolean | undefined;
 }
 
 const readPackageName = async (rootPath: string): Promise<string> => {
@@ -118,6 +126,24 @@ const buildAnalysisMeta = (
   llmCostUsd,
 });
 
+const loadExistingPendingReview = async (
+  rootPath: string,
+  generatedAt: string,
+): Promise<PendingReviewArtifact> => {
+  const artifactPath = path.join(resolveAgentLayerDirectory(rootPath), PENDING_REVIEW_FILE);
+
+  try {
+    const artifact = JSON.parse(await readFile(artifactPath, "utf8")) as PendingReviewArtifact;
+    return artifact;
+  } catch {
+    return {
+      version: "1.0.0",
+      generatedAt,
+      entries: [],
+    };
+  }
+};
+
 export const runFullAnalysis = async (
   rootPath: string,
   options: RunFullAnalysisOptions = {},
@@ -138,6 +164,54 @@ export const runFullAnalysis = async (
   }
 
   const config = await resolveAnalysisConfig(resolvedRoot, options.config);
+  const incrementalState = options.incremental
+    ? await resolveIncrementalAnalysisState(resolvedRoot, staticResult.routeGraph)
+    : undefined;
+
+  if (
+    incrementalState !== undefined &&
+    incrementalState.changedRouteIds.length === 0
+  ) {
+    try {
+      const existingDraft = await loadCapabilitiesDraftArtifact(resolvedRoot);
+      const pendingReview = await loadExistingPendingReview(resolvedRoot, generatedAt);
+      const meta = buildAnalysisMeta(
+        staticResult.meta.framework,
+        staticResult.routeGraph.length,
+        existingDraft.capabilities.length,
+        staticResult.warnings.length,
+        0,
+        generatedAt,
+      );
+
+      let artifactPaths: WriteAnalysisArtifactsResult | undefined;
+
+      if (options.writeArtifacts !== false) {
+        artifactPaths = await writeAnalysisArtifacts(resolvedRoot, {
+          capabilities: existingDraft,
+          pendingReview,
+          analysisMeta: serializeAnalysisMetaArtifact(
+            meta,
+            undefined,
+            incrementalState.routeFileHashes,
+          ),
+          routeGraph: serializeRouteGraphArtifact(staticResult.routeGraph, generatedAt),
+        });
+      }
+
+      return {
+        routeGraph: staticResult.routeGraph,
+        capabilities: existingDraft.capabilities,
+        warnings: staticResult.warnings,
+        meta,
+        pendingReview,
+        ...(artifactPaths !== undefined ? { artifactPaths } : {}),
+      };
+    } catch {
+      // Fall through to full analysis when no existing draft is available.
+    }
+  }
+
   const resolvedProvider = await resolveAnalyzeLlmProvider(
     resolvedRoot,
     config,
@@ -194,6 +268,10 @@ export const runFullAnalysis = async (
     groups: refineResult.groups,
     pendingReview: refineResult.pendingReview,
   });
+  const mergedCapabilities =
+    incrementalState === undefined
+      ? capabilities
+      : mergeIncrementalCapabilities(incrementalState.preservedCapabilities, capabilities);
 
   const llmUsage = sumLlmUsage([
     domainClient.getUsage(),
@@ -210,7 +288,7 @@ export const runFullAnalysis = async (
   const meta = buildAnalysisMeta(
     framework,
     staticResult.routeGraph.length,
-    capabilities.length,
+    mergedCapabilities.length,
     staticResult.warnings.length,
     llmUsage?.costUsd ?? 0,
     generatedAt,
@@ -220,16 +298,20 @@ export const runFullAnalysis = async (
 
   if (options.writeArtifacts !== false) {
     artifactPaths = await writeAnalysisArtifacts(resolvedRoot, {
-      capabilities: serializeCapabilitiesDraft(capabilities, generatedAt),
+      capabilities: serializeCapabilitiesDraft(mergedCapabilities, generatedAt),
       pendingReview: refineResult.pendingReview,
-      analysisMeta: serializeAnalysisMetaArtifact(meta, llmUsage),
+      analysisMeta: serializeAnalysisMetaArtifact(
+        meta,
+        llmUsage,
+        incrementalState?.routeFileHashes,
+      ),
       routeGraph: serializeRouteGraphArtifact(staticResult.routeGraph, generatedAt),
     });
   }
 
   return {
     routeGraph: staticResult.routeGraph,
-    capabilities,
+    capabilities: mergedCapabilities,
     warnings: staticResult.warnings,
     meta,
     pendingReview: refineResult.pendingReview,

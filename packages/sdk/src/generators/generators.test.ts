@@ -94,9 +94,23 @@ describe("discovery artifact generators", () => {
 
     expect(artifacts.mcpTools.version).toBe(MCP_TOOLS_ARTIFACT_VERSION);
     expect(artifacts.mcpTools.tools[0]?.name).toBe("product_catalog");
-    expect(artifacts.mcpTools.tools[0]?.inputSchema.properties?.operation).toMatchObject({
-      enum: ["list_products", "search_products"],
-    });
+    const inputSchema = artifacts.mcpTools.tools[0]?.inputSchema;
+
+    expect(inputSchema).toMatchObject({ type: "object" });
+
+    if (
+      typeof inputSchema === "object" &&
+      inputSchema !== null &&
+      "properties" in inputSchema &&
+      typeof inputSchema.properties === "object" &&
+      inputSchema.properties !== null
+    ) {
+      const properties = inputSchema.properties as Record<string, unknown>;
+
+      expect(properties.operation).toMatchObject({
+        enum: ["list_products", "search_products"],
+      });
+    }
   });
 
   it("should publish approved capabilities and write discovery artifacts", async () => {

@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-06-12T11:11:57.214Z",
+  "baseUrl": "https://example.com",
+  "tools": [
+    {
+      "name": "account_access",
+      "description": "Authenticate users and establish sessions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "description": "Operation to execute. Defaults to login.",
+            "default": "login"
+          },
+          "input": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "password": {
+                "type": "string",
+                "minLength": 8
+              }
+            },
+            "required": [
+              "email",
+              "password"
+            ]
+          }
+        },
+        "required": [
+          "input"
+        ]
+      }
+    },
+    {
+      "name": "cart_management",
+      "description": "View and modify the shopping cart",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "description": "Operation to execute.",
+            "enum": [
+              "add_cart_item",
+              "get_cart",
+              "update_cart_item"
+            ],
+            "default": "get_cart"
+          },
+          "input": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "input"
+        ]
+      }
+    },
+    {
+      "name": "product_catalog",
+      "description": "Browse and search products in the store catalog",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "description": "Operation to execute.",
+            "enum": [
+              "get_product",
+              "list_products",
+              "search_products"
+            ],
+            "default": "get_product"
+          },
+          "input": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId"
+            ]
+          }
+        },
+        "required": [
+          "input"
+        ]
+      }
+    }
+  ]
+}

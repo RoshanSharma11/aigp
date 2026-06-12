@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-06-12T11:11:57.214Z",
+  "framework": "nestjs",
+  "routeCount": 7,
+  "capabilityCount": 3,
+  "warningCount": 0,
+  "llmCostUsd": 0,
+  "llm": {
+    "provider": "mock",
+    "model": "mock-model-v1",
+    "promptTokens": 300,
+    "completionTokens": 150,
+    "totalTokens": 450,
+    "costUsd": 0,
+    "callCount": 3
+  }
+}

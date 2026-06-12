@@ -1,0 +1,511 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-06-12T11:11:57.214Z",
+  "capabilities": [
+    {
+      "id": "account_access",
+      "name": "Account Access",
+      "description": "Authenticate users and establish sessions",
+      "category": "auth",
+      "operations": [
+        {
+          "id": "login",
+          "description": "Authenticate a user and create a session",
+          "httpMethod": "POST",
+          "httpPath": "/api/auth/login",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "password": {
+                "type": "string",
+                "minLength": 8
+              }
+            },
+            "required": [
+              "email",
+              "password"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "accessToken": {
+                "type": "string"
+              },
+              "refreshToken": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "accessToken",
+              "refreshToken"
+            ]
+          },
+          "sideEffects": "write"
+        }
+      ],
+      "defaultOperation": "login",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken",
+          "refreshToken"
+        ]
+      },
+      "sideEffects": "write",
+      "requiresAuth": false,
+      "followedBy": [
+        "cart_management"
+      ],
+      "reversible": true,
+      "confirmationRequired": false,
+      "riskLevel": "medium",
+      "confidence": 0.976,
+      "needsHumanReview": false,
+      "sourceRoutes": [
+        "POST /api/auth/login"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "cart_management",
+      "name": "Cart Management",
+      "description": "View and modify the shopping cart",
+      "category": "cart",
+      "operations": [
+        {
+          "id": "add_cart_item",
+          "description": "Add an item to the shopping cart",
+          "httpMethod": "POST",
+          "httpPath": "/api/cart/items",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "productId",
+              "quantity"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items"
+            ]
+          },
+          "sideEffects": "write"
+        },
+        {
+          "id": "get_cart",
+          "description": "Get the current user's shopping cart",
+          "httpMethod": "GET",
+          "httpPath": "/api/cart",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items"
+            ]
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "update_cart_item",
+          "description": "Update quantity for a cart line item",
+          "httpMethod": "PATCH",
+          "httpPath": "/api/cart/items/:productId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "productId",
+              "quantity"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "items"
+            ]
+          },
+          "sideEffects": "write"
+        }
+      ],
+      "defaultOperation": "get_cart",
+      "inputSchema": {
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "productId",
+                "quantity"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "items"
+        ]
+      },
+      "sideEffects": "transactional",
+      "requiresAuth": true,
+      "prerequisites": [
+        "account_access"
+      ],
+      "reversible": true,
+      "confirmationRequired": false,
+      "riskLevel": "medium",
+      "confidence": 0.924,
+      "needsHumanReview": false,
+      "sourceRoutes": [
+        "GET /api/cart",
+        "PATCH /api/cart/items/:productId",
+        "POST /api/cart/items"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "product_catalog",
+      "name": "Product Catalog",
+      "description": "Browse and search products in the store catalog",
+      "category": "catalog",
+      "operations": [
+        {
+          "id": "get_product",
+          "description": "Get a single product by ID",
+          "httpMethod": "GET",
+          "httpPath": "/api/products/:productId",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "productId"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "priceCents": {
+                "type": "number"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "inStock": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "priceCents",
+              "currency",
+              "inStock"
+            ]
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "list_products",
+          "description": "List all products in the catalog",
+          "httpMethod": "GET",
+          "httpPath": "/api/products",
+          "inputSchema": {
+            "type": "object"
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "priceCents": {
+                  "type": "number"
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "inStock": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "priceCents",
+                "currency",
+                "inStock"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        },
+        {
+          "id": "search_products",
+          "description": "Search products by query filters",
+          "httpMethod": "GET",
+          "httpPath": "/api/products/search",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "minLength": 2
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "priceCents": {
+                  "type": "number"
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "inStock": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "priceCents",
+                "currency",
+                "inStock"
+              ]
+            }
+          },
+          "sideEffects": "read"
+        }
+      ],
+      "defaultOperation": "get_product",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "priceCents": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "inStock": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "priceCents",
+          "currency",
+          "inStock"
+        ]
+      },
+      "sideEffects": "read",
+      "requiresAuth": false,
+      "reversible": true,
+      "confirmationRequired": false,
+      "riskLevel": "low",
+      "confidence": 0.935,
+      "needsHumanReview": false,
+      "sourceRoutes": [
+        "GET /api/products",
+        "GET /api/products/:productId",
+        "GET /api/products/search"
+      ],
+      "status": "draft"
+    }
+  ]
+}

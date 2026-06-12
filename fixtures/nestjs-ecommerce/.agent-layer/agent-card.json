@@ -1,0 +1,39 @@
+{
+  "name": "Agent Layer",
+  "description": "Discover and invoke curated business capabilities exposed by this application.",
+  "url": "https://example.com",
+  "version": "1.0.0",
+  "generatedAt": "2026-06-12T11:11:57.214Z",
+  "capabilitiesEndpoint": "https://example.com/agent/capabilities",
+  "skills": [
+    {
+      "id": "account_access",
+      "name": "Account Access",
+      "description": "Authenticate users and establish sessions",
+      "tags": [
+        "auth"
+      ]
+    },
+    {
+      "id": "cart_management",
+      "name": "Cart Management",
+      "description": "View and modify the shopping cart",
+      "tags": [
+        "cart"
+      ]
+    },
+    {
+      "id": "product_catalog",
+      "name": "Product Catalog",
+      "description": "Browse and search products in the store catalog",
+      "tags": [
+        "catalog"
+      ]
+    }
+  ],
+  "authentication": {
+    "schemes": [
+      "bearer"
+    ]
+  }
+}

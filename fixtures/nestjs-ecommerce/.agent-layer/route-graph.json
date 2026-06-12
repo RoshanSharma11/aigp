@@ -1,0 +1,558 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-06-12T11:11:57.214Z",
+  "routes": [
+    {
+      "route": {
+        "id": "auth_login_post_auth_login",
+        "framework": "nestjs",
+        "method": "POST",
+        "path": "/api/auth/login",
+        "controllerName": "AuthController",
+        "handlerName": "login",
+        "sourceLocation": {
+          "filePath": "src/auth/auth.controller.ts",
+          "line": 14,
+          "column": 3
+        },
+        "middleware": []
+      },
+      "requestSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken",
+          "refreshToken"
+        ]
+      },
+      "middleware": [],
+      "callChain": [
+        {
+          "name": "login",
+          "filePath": "src/auth/auth.controller.ts",
+          "kind": "handler"
+        },
+        {
+          "name": "AuthService.login",
+          "filePath": "src/auth/auth.service.ts",
+          "kind": "service"
+        }
+      ],
+      "databaseEntities": [
+        "SessionEntity"
+      ],
+      "sourceCode": "@Post(\"login\")\n  login(@Body() input: LoginDto): SessionEntity {\n    return this.authService.login(input);\n  }"
+    },
+    {
+      "route": {
+        "id": "cart_get_cart_get_cart",
+        "framework": "nestjs",
+        "method": "GET",
+        "path": "/api/cart",
+        "controllerName": "CartController",
+        "handlerName": "getCart",
+        "sourceLocation": {
+          "filePath": "src/cart/cart.controller.ts",
+          "line": 17,
+          "column": 3
+        },
+        "middleware": [
+          {
+            "name": "AuthGuard",
+            "source": "controller",
+            "arguments": [
+              "AuthGuard"
+            ]
+          }
+        ]
+      },
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "productId",
+                "quantity"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "items"
+        ]
+      },
+      "middleware": [
+        {
+          "name": "AuthGuard",
+          "source": "controller",
+          "arguments": [
+            "AuthGuard"
+          ]
+        }
+      ],
+      "callChain": [
+        {
+          "name": "getCart",
+          "filePath": "src/cart/cart.controller.ts",
+          "kind": "handler"
+        },
+        {
+          "name": "CartService.getCart",
+          "filePath": "src/cart/cart.service.ts",
+          "kind": "service"
+        }
+      ],
+      "databaseEntities": [
+        "CartEntity"
+      ],
+      "sourceCode": "@Get()\n  getCart(): CartEntity {\n    return this.cartService.getCart();\n  }"
+    },
+    {
+      "route": {
+        "id": "cart_add_cart_item_post_cart_items",
+        "framework": "nestjs",
+        "method": "POST",
+        "path": "/api/cart/items",
+        "controllerName": "CartController",
+        "handlerName": "addCartItem",
+        "sourceLocation": {
+          "filePath": "src/cart/cart.controller.ts",
+          "line": 22,
+          "column": 3
+        },
+        "middleware": [
+          {
+            "name": "AuthGuard",
+            "source": "controller",
+            "arguments": [
+              "AuthGuard"
+            ]
+          }
+        ]
+      },
+      "requestSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      },
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "productId",
+                "quantity"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "items"
+        ]
+      },
+      "middleware": [
+        {
+          "name": "AuthGuard",
+          "source": "controller",
+          "arguments": [
+            "AuthGuard"
+          ]
+        }
+      ],
+      "callChain": [
+        {
+          "name": "addCartItem",
+          "filePath": "src/cart/cart.controller.ts",
+          "kind": "handler"
+        },
+        {
+          "name": "CartService.addCartItem",
+          "filePath": "src/cart/cart.service.ts",
+          "kind": "service"
+        }
+      ],
+      "databaseEntities": [
+        "CartEntity"
+      ],
+      "sourceCode": "@Post(\"items\")\n  addCartItem(@Body() input: AddCartItemDto): CartEntity {\n    return this.cartService.addCartItem(input);\n  }"
+    },
+    {
+      "route": {
+        "id": "cart_update_cart_item_patch_cart_items_productId",
+        "framework": "nestjs",
+        "method": "PATCH",
+        "path": "/api/cart/items/:productId",
+        "controllerName": "CartController",
+        "handlerName": "updateCartItem",
+        "sourceLocation": {
+          "filePath": "src/cart/cart.controller.ts",
+          "line": 27,
+          "column": 3
+        },
+        "middleware": [
+          {
+            "name": "AuthGuard",
+            "source": "controller",
+            "arguments": [
+              "AuthGuard"
+            ]
+          }
+        ]
+      },
+      "requestSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      },
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "productId",
+                "quantity"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "items"
+        ]
+      },
+      "middleware": [
+        {
+          "name": "AuthGuard",
+          "source": "controller",
+          "arguments": [
+            "AuthGuard"
+          ]
+        }
+      ],
+      "callChain": [
+        {
+          "name": "updateCartItem",
+          "filePath": "src/cart/cart.controller.ts",
+          "kind": "handler"
+        },
+        {
+          "name": "CartService.updateCartItem",
+          "filePath": "src/cart/cart.service.ts",
+          "kind": "service"
+        }
+      ],
+      "databaseEntities": [
+        "CartEntity"
+      ],
+      "sourceCode": "@Patch(\"items/:productId\")\n  updateCartItem(\n    @Param(\"productId\") productId: string,\n    @Body() input: UpdateCartItemDto\n  ): CartEntity {\n    return this.cartService.updateCartItem(productId, input);\n  }"
+    },
+    {
+      "route": {
+        "id": "products_list_products_get_products",
+        "framework": "nestjs",
+        "method": "GET",
+        "path": "/api/products",
+        "controllerName": "ProductsController",
+        "handlerName": "listProducts",
+        "sourceLocation": {
+          "filePath": "src/products/products.controller.ts",
+          "line": 14,
+          "column": 3
+        },
+        "middleware": []
+      },
+      "responseSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "priceCents": {
+              "type": "number"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "inStock": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "priceCents",
+            "currency",
+            "inStock"
+          ]
+        }
+      },
+      "middleware": [],
+      "callChain": [
+        {
+          "name": "listProducts",
+          "filePath": "src/products/products.controller.ts",
+          "kind": "handler"
+        },
+        {
+          "name": "ProductsService.listProducts",
+          "filePath": "src/products/products.service.ts",
+          "kind": "service"
+        }
+      ],
+      "databaseEntities": [
+        "ProductEntity"
+      ],
+      "sourceCode": "@Get()\n  listProducts(): readonly ProductEntity[] {\n    return this.productsService.listProducts();\n  }"
+    },
+    {
+      "route": {
+        "id": "products_get_product_by_id_get_products_productId",
+        "framework": "nestjs",
+        "method": "GET",
+        "path": "/api/products/:productId",
+        "controllerName": "ProductsController",
+        "handlerName": "getProductById",
+        "sourceLocation": {
+          "filePath": "src/products/products.controller.ts",
+          "line": 26,
+          "column": 3
+        },
+        "middleware": []
+      },
+      "requestSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      },
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "priceCents": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "inStock": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "priceCents",
+          "currency",
+          "inStock"
+        ]
+      },
+      "middleware": [],
+      "callChain": [
+        {
+          "name": "getProductById",
+          "filePath": "src/products/products.controller.ts",
+          "kind": "handler"
+        },
+        {
+          "name": "ProductsService.getProductById",
+          "filePath": "src/products/products.service.ts",
+          "kind": "service"
+        }
+      ],
+      "databaseEntities": [
+        "ProductEntity"
+      ],
+      "sourceCode": "@Get(\":productId\")\n  getProductById(\n    @Param(\"productId\") productId: string\n  ): ProductEntity | undefined {\n    return this.productsService.getProductById(productId);\n  }"
+    },
+    {
+      "route": {
+        "id": "products_search_products_get_products_search",
+        "framework": "nestjs",
+        "method": "GET",
+        "path": "/api/products/search",
+        "controllerName": "ProductsController",
+        "handlerName": "searchProducts",
+        "sourceLocation": {
+          "filePath": "src/products/products.controller.ts",
+          "line": 19,
+          "column": 3
+        },
+        "middleware": []
+      },
+      "requestSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2
+          }
+        }
+      },
+      "responseSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "priceCents": {
+              "type": "number"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "inStock": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "priceCents",
+            "currency",
+            "inStock"
+          ]
+        }
+      },
+      "middleware": [],
+      "callChain": [
+        {
+          "name": "searchProducts",
+          "filePath": "src/products/products.controller.ts",
+          "kind": "handler"
+        },
+        {
+          "name": "ProductsService.searchProducts",
+          "filePath": "src/products/products.service.ts",
+          "kind": "service"
+        }
+      ],
+      "databaseEntities": [
+        "ProductEntity"
+      ],
+      "sourceCode": "@Get(\"search\")\n  searchProducts(\n    @Query() query: SearchProductsQueryDto\n  ): readonly ProductEntity[] {\n    return this.productsService.searchProducts(query);\n  }"
+    }
+  ]
+}
