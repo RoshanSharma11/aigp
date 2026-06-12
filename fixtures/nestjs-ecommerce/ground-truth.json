@@ -1,0 +1,91 @@
+{
+  "fixture": "nestjs-ecommerce",
+  "version": "1.0.0",
+  "generatedAt": "2026-06-12T00:00:00.000Z",
+  "routes": [
+    {
+      "id": "products_list",
+      "method": "GET",
+      "path": "/api/products",
+      "controller": "ProductsController",
+      "handler": "listProducts",
+      "requestDto": null,
+      "responseEntity": "ProductEntity[]",
+      "databaseEntities": ["ProductEntity"],
+      "requiresAuth": false,
+      "futureCapabilityHint": "product_catalog"
+    },
+    {
+      "id": "products_search",
+      "method": "GET",
+      "path": "/api/products/search",
+      "controller": "ProductsController",
+      "handler": "searchProducts",
+      "requestDto": "SearchProductsQueryDto",
+      "responseEntity": "ProductEntity[]",
+      "databaseEntities": ["ProductEntity"],
+      "requiresAuth": false,
+      "futureCapabilityHint": "search_products"
+    },
+    {
+      "id": "products_get_by_id",
+      "method": "GET",
+      "path": "/api/products/:productId",
+      "controller": "ProductsController",
+      "handler": "getProductById",
+      "requestDto": null,
+      "responseEntity": "ProductEntity",
+      "databaseEntities": ["ProductEntity"],
+      "requiresAuth": false,
+      "futureCapabilityHint": "product_catalog"
+    },
+    {
+      "id": "cart_get",
+      "method": "GET",
+      "path": "/api/cart",
+      "controller": "CartController",
+      "handler": "getCart",
+      "requestDto": null,
+      "responseEntity": "CartEntity",
+      "databaseEntities": ["CartEntity"],
+      "requiresAuth": true,
+      "futureCapabilityHint": "cart_management"
+    },
+    {
+      "id": "cart_add_item",
+      "method": "POST",
+      "path": "/api/cart/items",
+      "controller": "CartController",
+      "handler": "addCartItem",
+      "requestDto": "AddCartItemDto",
+      "responseEntity": "CartEntity",
+      "databaseEntities": ["CartEntity"],
+      "requiresAuth": true,
+      "futureCapabilityHint": "cart_management"
+    },
+    {
+      "id": "cart_update_item",
+      "method": "PATCH",
+      "path": "/api/cart/items/:productId",
+      "controller": "CartController",
+      "handler": "updateCartItem",
+      "requestDto": "UpdateCartItemDto",
+      "responseEntity": "CartEntity",
+      "databaseEntities": ["CartEntity"],
+      "requiresAuth": true,
+      "futureCapabilityHint": "cart_management"
+    },
+    {
+      "id": "auth_login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "controller": "AuthController",
+      "handler": "login",
+      "requestDto": "LoginDto",
+      "responseEntity": "SessionEntity",
+      "databaseEntities": ["SessionEntity"],
+      "requiresAuth": false,
+      "futureCapabilityHint": "account_access"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-layer.dev/schemas/config.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["llm", "confidenceThreshold", "excludeRoutes", "baseUrl"],
+  "properties": {
+    "llm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model"],
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": ["openai", "anthropic", "mock"]
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiKeyEnvVar": {
+          "type": "string",
+          "minLength": 1
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2
+        }
+      }
+    },
+    "confidenceThreshold": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "excludeRoutes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "baseUrl": {
+      "type": "string",
+      "format": "uri"
+    }
+  }
+}

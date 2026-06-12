@@ -1,0 +1,20 @@
+{
+  "name": "idea-agent-interface-generation",
+  "private": true,
+  "packageManager": "pnpm@10.13.1",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "vitest run",
+    "lint": "pnpm -r lint"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "reflect-metadata": "^0.2.2",
+    "tree-sitter": "^0.25.0",
+    "tsup": "^8.5.0",
+    "ts-morph": "^26.0.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4",
+    "zod": "^3.25.67"
+  }
+}

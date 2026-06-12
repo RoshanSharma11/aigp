@@ -1,0 +1,6 @@
+node_modules
+dist
+coverage
+*.tsbuildinfo
+.agent-layer/capabilities.draft.json
+.agent-layer/pending-review.json

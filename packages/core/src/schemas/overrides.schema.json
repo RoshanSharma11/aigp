@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-layer.dev/schemas/overrides.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "updatedAt", "capabilities"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capabilityOverride"
+      }
+    }
+  },
+  "$defs": {
+    "jsonSchema": {
+      "type": ["object", "boolean"]
+    },
+    "capabilityOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "category": { "type": "string", "minLength": 1 },
+        "defaultOperation": { "type": "string", "minLength": 1 },
+        "inputSchema": { "$ref": "#/$defs/jsonSchema" },
+        "outputSchema": { "$ref": "#/$defs/jsonSchema" },
+        "sideEffects": {
+          "type": "string",
+          "enum": ["read", "write", "delete", "transactional"]
+        },
+        "requiresAuth": { "type": "boolean" },
+        "prerequisites": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "followedBy": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "reversible": { "type": "boolean" },
+        "confirmationRequired": { "type": "boolean" },
+        "riskLevel": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "needsHumanReview": { "type": "boolean" },
+        "sourceRoutes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "approved", "disabled"]
+        }
+      }
+    }
+  }
+}
